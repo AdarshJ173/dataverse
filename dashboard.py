@@ -8,8 +8,7 @@ from datetime import datetime
 
 # Page configuration
 st.set_page_config(
-    page_title="VelocityMart Dashboard",
-    page_icon="📦",
+    page_title="VelocityMart Operations Dashboard",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -195,15 +194,15 @@ sku_with_warehouse, picker_df_enhanced, picker_with_location, sku_frequency = ca
 )
 
 # Sidebar navigation
-st.sidebar.title("📊 Navigation")
+st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Select Dashboard",
-    ["🏠 Overview", "🔬 Data Forensics", "🚀 Phase 1 Strategy", "🔥 Heatmap Analysis", "❄️ Temperature Violations", 
-     "👤 Picker Performance", "📈 Demand Patterns"]
+    ["Executive Summary", "Forensic Data Analysis", "Optimization Strategy", "Congestion Heatmap", "Cold Chain Compliance", 
+     "Workforce Efficiency", "Demand Analytics"]
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📋 Quick Stats")
+st.sidebar.markdown("### Key Performance Indicators")
 st.sidebar.metric("Total SKUs", f"{len(sku_df):,}")
 st.sidebar.metric("Total Orders", f"{len(orders_df):,}")
 st.sidebar.metric("Pickers", len(picker_df['picker_id'].unique()))
@@ -213,19 +212,19 @@ st.sidebar.metric("Warehouse Slots", f"{len(warehouse_df):,}")
 # ANALYSIS CONTROLS
 # ============================================================================
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🧪 Sensitivity Analysis")
+st.sidebar.markdown("### Sensitivity Analysis")
 demand_stress = st.sidebar.slider("Stress Test: Demand Spike %", 0, 50, 0, 5, help="Simulate order volume increase")
 stress_factor = 1 + (demand_stress / 100)
 
 # ============================================================================
 # PAGE 1: OVERVIEW
 # ============================================================================
-if page == "🏠 Overview":
-    st.title("📦 VelocityMart Operations Dashboard")
+if page == "Executive Summary":
+    st.title("VelocityMart Operations Dashboard")
     st.markdown("### Strategic Intervention & Real-Time Monitoring")
     
     if demand_stress > 0:
-        st.error(f"⚠️ **STRESS TEST ACTIVE:** Simulating {demand_stress}% volume spike!")
+        st.error(f"**STRESS TEST ACTIVE:** Simulating {demand_stress}% volume spike!")
 
     # Key Metrics Row
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -244,7 +243,10 @@ if page == "🏠 Overview":
     base_pick_time = picker_df_enhanced['travel_time_minutes'].mean()
     projected_pick_time = base_pick_time * (stress_factor ** 1.5)
     
-    peak_hour_volume = int(orders_df[orders_df['hour'] == 19].shape[0] * stress_factor)
+    # Calculate daily average for peak hour to represent realistic congestion
+    total_days = orders_df['date'].nunique()
+    peak_hour_orders_total = orders_df[orders_df['hour'] == 19].shape[0]
+    peak_hour_volume = int((peak_hour_orders_total / max(1, total_days)) * stress_factor)
 
     with col1:
         st.metric(
@@ -282,14 +284,17 @@ if page == "🏠 Overview":
     with col5:
         # CHAOS SCORE CALCULATION (Weighted Composite Metric)
         # Weights: 40% Delay, 30% Spoilage, 30% Congestion
-        score_delay = max(0, (projected_pick_time - 3.0) * 20)  # 20 pts per min over 3.0
-        score_spoilage = min(30, critical_violations / 5)       # Cap at 30
-        score_congestion = min(30, peak_hour_volume / 20)       # Cap at 30
+        # Calibration:
+        # Spoilage: Max penalty (30pts) at 300 critical violations (Divisor: 10)
+        # Congestion: Max penalty (30pts) at 360 orders/hr (Capacity of 12 pickers) (Divisor: 12)
+        score_delay = max(0, (projected_pick_time - 3.0) * 20)  
+        score_spoilage = min(30, critical_violations / 10)       
+        score_congestion = min(30, peak_hour_volume / 12)       
         
         chaos_score = min(100, score_delay + score_spoilage + score_congestion)
         
         st.metric(
-            "🔥 CHAOS SCORE",
+            "OPERATIONAL STABILITY INDEX",
             f"{chaos_score:.0f}/100",
             "Critical Health" if chaos_score > 80 else "Stable",
             delta_color="inverse"
@@ -303,7 +308,7 @@ if page == "🏠 Overview":
 
     with col1:
         # --- SENSITIVITY CURVE (STRESS TEST) ---
-        st.markdown(f"### 📈 Stress Test: Impact of {demand_stress}% Spike")
+        st.markdown(f"### Stress Test: Impact of {demand_stress}% Spike")
         
         # Sensitivity Curve Data
         x_values = np.linspace(0, 50, 50)  # 0 to 50% spike
@@ -365,11 +370,11 @@ if page == "🏠 Overview":
         st.plotly_chart(fig_gauge, use_container_width=True)
         
         if chaos_score > 80:
-             st.error("🚨 **CRITICAL RISK:** Gridlock imminent.")
+             st.error("**CRITICAL RISK:** Gridlock imminent.")
         elif chaos_score > 50:
-             st.warning("⚠️ **WARNING:** Operations strained.")
+             st.warning("**WARNING:** Operations strained.")
         else:
-             st.success("✅ **STABLE:** Load manageable.")
+             st.success("**STABLE:** Load manageable.")
              
         st.markdown("**Sensitivity Insight:**")
         st.info("A 20% volume spike causes **44% more delay** due to congestion cascading. (Power Law)")
@@ -380,7 +385,7 @@ if page == "🏠 Overview":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("### 📊 Hourly Order Distribution")
+        st.markdown("### Hourly Order Distribution")
         hourly_orders = orders_df.groupby('hour').size().reset_index(name='count')
 
         fig_hourly = px.bar(
@@ -407,7 +412,7 @@ if page == "🏠 Overview":
         st.plotly_chart(fig_hourly, use_container_width=True)
 
     with col2:
-        st.markdown("### 🏢 Zone Utilization")
+        st.markdown("### Zone Utilization")
         zone_util = sku_with_warehouse.groupby('zone').size().reset_index(name='occupied')
         zone_capacity = warehouse_df.groupby('zone').size().reset_index(name='capacity')
         zone_data = zone_util.merge(zone_capacity, on='zone')
@@ -436,7 +441,7 @@ if page == "🏠 Overview":
 
     # Bottom section
     st.markdown("---")
-    st.markdown("### 🎯 Top 10 High-Velocity SKUs")
+    st.markdown("### Top 10 High-Velocity SKUs")
 
     top_skus = sku_frequency.head(10).merge(sku_df[['sku_id', 'category', 'temp_req']], on='sku_id')
 
@@ -456,9 +461,9 @@ if page == "🏠 Overview":
 # ============================================================================
 # PAGE 2: DATA FORENSICS (30 POINTS)
 # ============================================================================
-elif page == "🔬 Data Forensics":
-    st.title("🔬 Data Forensics & Cleaning Pipeline")
-    st.markdown("### Poisoned Data Detection & Correction (30 Points)")
+elif page == "Forensic Data Analysis":
+    st.title("Data Forensics & Cleaning Pipeline")
+    st.markdown("### Poisoned Data Detection & Correction")
     
     st.info("""
     **Competition Requirement:** The data is 'poisoned' with sensor noise, human gaming, and structural corruption. 
@@ -471,11 +476,11 @@ elif page == "🔬 Data Forensics":
     decimal_drift_skus['corrected_weight_kg'] = decimal_drift_skus['weight_kg'] / 10
     
     # Tabs for different forensic issues
-    tab1, tab2, tab3 = st.tabs(["🔢 Decimal Drift (10 pts)", "🏃 Shortcut Paradox (10 pts)", "👻 Ghost Inventory (10 pts)"])
+    tab1, tab2, tab3 = st.tabs(["Decimal Drift (Error Type 1)", "Efficiency Anomalies (Error Type 2)", "Inventory Discrepancies (Error Type 3)"])
     
     # ========== TAB 1: DECIMAL DRIFT ==========
     with tab1:
-        st.markdown("## 🔢 Issue 1: Decimal Drift Detection")
+        st.markdown("## Issue 1: Decimal Drift Detection")
         st.markdown("""
         **Problem:** Some SKU weights are recorded 10x higher than reality due to unit conversion errors (kg vs g).
         
@@ -491,7 +496,7 @@ elif page == "🔬 Data Forensics":
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("🚨 Anomalies Detected", f"{len(decimal_drift_skus)}", "SKUs with 10x weight error")
+            st.metric("Anomalies Detected", f"{len(decimal_drift_skus)}", "SKUs with 10x weight error")
         with col2:
             st.metric("Max Raw Weight", f"{sku_df['raw_weight_kg'].max():.1f} kg", "Impossible for retail")
         with col3:
@@ -503,7 +508,7 @@ elif page == "🔬 Data Forensics":
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### ❌ BEFORE: Weight Distribution (Raw Data)")
+            st.markdown("### BEFORE: Weight Distribution (Raw Data)")
             fig_before = px.histogram(
                 sku_df, x='raw_weight_kg', nbins=50,
                 title="Suspicious Long Tail (>50kg items)",
@@ -516,7 +521,7 @@ elif page == "🔬 Data Forensics":
             st.plotly_chart(fig_before, use_container_width=True)
         
         with col2:
-            st.markdown("### ✅ AFTER: Weight Distribution (Cleaned)")
+            st.markdown("### AFTER: Weight Distribution (Cleaned)")
             fig_after = px.histogram(
                 sku_df, x='weight_kg', nbins=50,
                 title="Normal Distribution After Correction",
@@ -526,7 +531,7 @@ elif page == "🔬 Data Forensics":
             fig_after.update_layout(height=350)
             st.plotly_chart(fig_after, use_container_width=True)
         
-        st.markdown("### 📋 Affected SKUs Detail")
+        st.markdown("### Affected SKUs Detail")
         st.dataframe(
             decimal_drift_skus[['sku_id', 'category', 'raw_weight_kg', 'weight_kg', 'temp_req', 'current_slot']].sort_values('raw_weight_kg', ascending=False),
             use_container_width=True,
@@ -534,13 +539,13 @@ elif page == "🔬 Data Forensics":
         )
         
         st.success(f"""
-        ✅ **Correction Applied:** {len(decimal_drift_skus)} SKUs identified with decimal drift.
+        **Correction Applied:** {len(decimal_drift_skus)} SKUs identified with decimal drift.
         All weights >50kg divided by 10 to correct the unit error.
         """)
     
     # ========== TAB 2: SHORTCUT PARADOX ==========
     with tab2:
-        st.markdown("## 🏃 Issue 2: The Shortcut Paradox - PICKER-07")
+        st.markdown("## Issue 2: Workforce Efficiency Anomalies - PICKER-07")
         st.markdown("""
         **Problem:** Some pickers appear 'efficient' only because they skip safety zones and barriers.
         
@@ -570,20 +575,20 @@ elif page == "🔬 Data Forensics":
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("🚨 PICKER-07 Avg Distance", f"{p7_data['avg_distance']:.1f}m", f"-{((others_avg - p7_data['avg_distance'])/others_avg*100):.0f}% vs others")
+            st.metric("PICKER-07 Avg Distance", f"{p7_data['avg_distance']:.1f}m", f"-{((others_avg - p7_data['avg_distance'])/others_avg*100):.0f}% vs others")
         with col2:
             st.metric("Others Avg Distance", f"{others_avg:.1f}m", "Normal baseline")
         with col3:
             st.metric("PICKER-07 Z-Score", f"{p7_data['z_score']:.2f}", "< -2 = anomaly")
         with col4:
-            st.metric("Verdict", "⚠️ SHORTCUTS", "Safety violation")
+            st.metric("Verdict", "SHORTCUTS DETECTED", "Safety violation")
         
         st.markdown("---")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### 📊 Distance Comparison by Picker")
+            st.markdown("### Distance Comparison by Picker")
             fig_picker = px.bar(
                 picker_stats,
                 x='picker_id',
@@ -600,7 +605,7 @@ elif page == "🔬 Data Forensics":
             st.plotly_chart(fig_picker, use_container_width=True)
         
         with col2:
-            st.markdown("### 📈 Distance Distribution: PICKER-07 vs Others")
+            st.markdown("### Distance Distribution: PICKER-07 vs Others")
             # Create comparison histograms
             p7_distances = picker_df_enhanced[picker_df_enhanced['picker_id'] == 'PICKER-07']['travel_distance_m']
             others_distances = picker_df_enhanced[picker_df_enhanced['picker_id'] != 'PICKER-07']['travel_distance_m']
@@ -617,13 +622,13 @@ elif page == "🔬 Data Forensics":
             )
             st.plotly_chart(fig_hist, use_container_width=True)
         
-        st.markdown("### 📋 Statistical Evidence Table")
+        st.markdown("### Statistical Evidence Table")
         display_stats = picker_stats[['picker_id', 'avg_distance', 'std_distance', 'total_picks', 'z_score', 'is_anomaly']].copy()
         display_stats.columns = ['Picker ID', 'Avg Distance (m)', 'Std Dev', 'Total Picks', 'Z-Score', 'Is Anomaly']
         st.dataframe(display_stats, use_container_width=True)
         
         st.error("""
-        🚨 **CONCLUSION:** PICKER-07 is gaming the system!
+        **CONCLUSION:** PICKER-07 is gaming the system!
         
         **Evidence:**
         - Average distance is 17.5m vs 35m for others (50% less)
@@ -637,7 +642,7 @@ elif page == "🔬 Data Forensics":
     
     # ========== TAB 3: GHOST INVENTORY ==========
     with tab3:
-        st.markdown("## 👻 Issue 3: Ghost Inventory & Constraint Violations")
+        st.markdown("## Issue 3: Inventory Constraint Violations")
         st.markdown("""
         **Problem:** SKUs assigned to bins that don't exist OR violate physical constraints.
         
@@ -661,22 +666,22 @@ elif page == "🔬 Data Forensics":
         col1, col2, col3 = st.columns(3)
         with col1:
             if len(ghost_bins) > 0:
-                st.metric("👻 Ghost Bins", f"{len(ghost_bins)}", "Invalid slot IDs")
+                st.metric("Invalid Bins", f"{len(ghost_bins)}", "Invalid slot IDs")
                 st.error(f"SKUs in non-existent bins: {list(ghost_bins)[:5]}")
             else:
-                st.metric("👻 Ghost Bins", "0", "✅ All slots valid")
+                st.metric("Invalid Bins", "0", "All slots valid")
                 st.success("All SKU slot assignments map to valid warehouse locations.")
         
         with col2:
-            st.metric("⚖️ Weight Violations", f"{len(weight_violations)}", "Exceeding bin limits")
+            st.metric("Weight Violations", f"{len(weight_violations)}", "Exceeding bin limits")
         
         with col3:
-            st.metric("🌡️ Temp Zone Violations", f"{len(temp_violations)}", f"{len(temp_violations)/len(sku_df)*100:.1f}%")
+            st.metric("Temp Zone Violations", f"{len(temp_violations)}", f"{len(temp_violations)/len(sku_df)*100:.1f}%")
         
         st.markdown("---")
         
         if len(weight_violations) > 0:
-            st.markdown("### ⚖️ Weight Constraint Violations")
+            st.markdown("### Weight Constraint Violations")
             st.warning(f"**{len(weight_violations)} SKUs** exceed their bin's maximum weight capacity!")
             
             display_weight = weight_violations[['sku_id', 'category', 'weight_kg', 'max_weight_kg', 'current_slot']].copy()
@@ -690,7 +695,7 @@ elif page == "🔬 Data Forensics":
             """)
         
         st.markdown("---")
-        st.markdown("### 🌡️ Temperature Zone Mismatch Summary")
+        st.markdown("### Temperature Zone Mismatch Summary")
         
         col1, col2 = st.columns(2)
         
@@ -719,7 +724,7 @@ elif page == "🔬 Data Forensics":
                 (temp_violations['temp_zone'] == 'Ambient')
             ]
             
-            st.markdown(f"### 🚨 Critical Violations: {len(critical)}")
+            st.markdown(f"### Critical Violations: {len(critical)}")
             st.error(f"""
             **{len(critical)} items** requiring cold storage are in AMBIENT zones!
             
@@ -729,11 +734,11 @@ elif page == "🔬 Data Forensics":
             """)
         
         st.markdown("---")
-        st.markdown("## ✅ Forensics Summary & Cleaning Actions")
+        st.markdown("## Forensics Summary & Cleaning Actions")
         
         summary_data = {
             'Issue': ['Decimal Drift', 'Shortcut Paradox', 'Ghost Inventory', 'Weight Violations', 'Temp Violations'],
-            'Status': ['⚠️ DETECTED', '⚠️ DETECTED', '✅ CLEAR', '⚠️ DETECTED', '⚠️ DETECTED'],
+            'Status': ['DETECTED', 'DETECTED', 'CLEAR', 'DETECTED', 'DETECTED'],
             'Count': [str(len(decimal_drift_skus)), '1 Picker (PICKER-07)', '0', str(len(weight_violations)), str(len(temp_violations))],
             'Action': [
                 'Divide by 10 for weights >50kg',
@@ -750,9 +755,9 @@ elif page == "🔬 Data Forensics":
 # ============================================================================
 # PAGE 3: PHASE 1 STRATEGIC MOVES (40 POINTS)
 # ============================================================================
-elif page == "🚀 Phase 1 Strategy":
-    st.title("🚀 Phase 1: Strategic Intervention Roadmap")
-    st.markdown("### The 'First 50' Moves for Immediate Impact")
+elif page == "Optimization Strategy":
+    st.title("Strategic Optimization Roadmap")
+    st.markdown("### Phase 1: High-Velocity Inventory Relocation")
     
     try:
         slotting_plan = pd.read_csv('final_slotting_plan.csv')
@@ -776,16 +781,16 @@ elif page == "🚀 Phase 1 Strategy":
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("📦 Top 50 Moves Impact", f"{top_50_moves['order_count'].sum():,.0f}", "Total Orders Affected")
+            st.metric("Top 50 Moves Impact", f"{top_50_moves['order_count'].sum():,.0f}", "Total Orders Affected")
         with col2:
-            st.metric("🚀 Aisle B De-congestion", f"{len(moves_from_aisle_b)} SKUs", "High-velocity items moved OUT")
+            st.metric("Aisle B De-congestion", f"{len(moves_from_aisle_b)} SKUs", "High-velocity items moved OUT")
         with col3:
-            st.metric("⏱️ Est. Fulfillment Gain", "-12%", "Reduction in travel time")
+            st.metric("Est. Fulfillment Gain", "-12%", "Reduction in travel time")
             
         st.markdown("---")
         
         # Visualization: Where are they going?
-        st.markdown("### 🗺️ Move Topology (Top 50)")
+        st.markdown("### Move Topology (Top 50)")
         
         top_50_moves['From_Aisle'] = top_50_moves['current_slot'].str[0]
         top_50_moves['To_Aisle'] = top_50_moves['Bin_ID'].str[0]
@@ -805,10 +810,10 @@ elif page == "🚀 Phase 1 Strategy":
             fig_after = px.histogram(top_50_moves, x='To_Aisle', title="New Locations (Optimized)", color_discrete_sequence=['#51cf66'])
             st.plotly_chart(fig_after, use_container_width=True)
             
-        st.success("✅ **Strategy:** We are aggressively moving High-Velocity items from **Aisle B** (Congested) to **Aisle A** (Entry Point) and **Aisle C**.")
+        st.success("**Strategy:** We are prioritizing moving High-Velocity items from **Aisle B** (Congested) to **Aisle A** (Entry Point) and **Aisle C**.")
         
-        st.markdown("### 📋 The Top 50 Execution List")
-        st.markdown("Give this list to the floor manager for immediate execution tonight.")
+        st.markdown("### Top 50 Execution List")
+        st.markdown("Detailed itemized list for floor execution.")
         
         display_moves = top_50_moves[['sku_id', 'category', 'order_count', 'current_slot', 'Bin_ID', 'To_Aisle']].copy()
         display_moves.columns = ['SKU', 'Category', 'Yearly Orders', 'Current Bin', 'NEW BIN', 'Target Aisle']
@@ -822,22 +827,22 @@ elif page == "🚀 Phase 1 Strategy":
         # Download Button
         csv = display_moves.to_csv(index=False).encode('utf-8')
         st.download_button(
-            label="📥 Download Phase 1 Move Sheet (CSV)",
+            label="Download Phase 1 Move Sheet (CSV)",
             data=csv,
             file_name='phase_1_top_50_moves.csv',
             mime='text/csv',
         )
         
     except Exception as e:
-        st.error(f"⚠️ Optimization Data Not Found: {e}")
+        st.error(f"Optimization Data Not Found: {e}")
         st.info("Run the `optimize_slotting.py` script first to generate the plan.")
 
 # ============================================================================
 # PAGE 4: HEATMAP ANALYSIS
 # ============================================================================
-elif page == "🔥 Heatmap Analysis":
-    st.title("🔥 Aisle Congestion Heatmap")
-    st.markdown("### High-Collision Aisles & Peak Hour Bottlenecks")
+elif page == "Congestion Heatmap":
+    st.title("Congestion Heatmap Analysis")
+    st.markdown("### Peak Hour Bottleneck Identification")
 
     # Filters
     col1, col2 = st.columns([3, 1])
@@ -894,7 +899,7 @@ elif page == "🔥 Heatmap Analysis":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("### 🚨 Aisle B Bottleneck Analysis")
+        st.markdown("### Aisle B Bottleneck Analysis")
 
         # Filter B aisles
         aisle_b_data = aisle_hour_traffic[aisle_hour_traffic['aisle'].str.startswith('B', na=False)]
@@ -932,10 +937,10 @@ elif page == "🔥 Heatmap Analysis":
         fig_aisle_b.update_layout(height=400)
         st.plotly_chart(fig_aisle_b, use_container_width=True)
 
-        st.warning("⚠️ **Forklift Constraint:** Max 2 pickers allowed in Aisle B")
+        st.warning("**Forklift Constraint:** Max 2 pickers allowed in Aisle B")
         
         # --- FORKLIFT DEAD-ZONE CALCULATION (THE TWIST) ---
-        st.markdown("### 🚧 Forklift Dead-zone Analysis (The 'Unspoken' Physics)")
+        st.markdown("### Forklift Dead-zone Analysis")
         st.info("Analysis of minutes where Forklift is BLOCKED (Pickers > 2)")
         
         # 1. Filter for Aisle B movements
@@ -950,7 +955,7 @@ elif page == "🔥 Heatmap Analysis":
             minute_counts = aisle_b_movements.groupby('minute')['picker_id'].nunique().reset_index(name='picker_count')
             
             # 3. Identify Blocked vs Safe windows
-            minute_counts['status'] = minute_counts['picker_count'].apply(lambda x: '⛔ BLOCKED' if x > 2 else '✅ SAFE')
+            minute_counts['status'] = minute_counts['picker_count'].apply(lambda x: 'BLOCKED' if x > 2 else 'SAFE')
             minute_counts['color'] = minute_counts['picker_count'].apply(lambda x: 'red' if x > 2 else 'green')
             
             # Metrics
@@ -959,9 +964,9 @@ elif page == "🔥 Heatmap Analysis":
             percent_blocked = (blocked_minutes / total_minutes) * 100
             
             m1, m2, m3 = st.columns(3)
-            m1.metric("⛔ Blocked Minutes", f"{blocked_minutes} min", f"{percent_blocked:.1f}% of hour")
-            m2.metric("✅ Safe Restock Windows", f"{total_minutes - blocked_minutes} min", "Available duration")
-            m3.metric("⚠️ Forklift Efficiency", f"{100-percent_blocked:.1f}%", "Capacity utilization")
+            m1.metric("Blocked Minutes", f"{blocked_minutes} min", f"{percent_blocked:.1f}% of hour")
+            m2.metric("Safe Restock Windows", f"{total_minutes - blocked_minutes} min", "Available duration")
+            m3.metric("Forklift Efficiency", f"{100-percent_blocked:.1f}%", "Capacity utilization")
             
             # Timeline Visualization
             fig_deadzone = px.bar(
@@ -969,7 +974,7 @@ elif page == "🔥 Heatmap Analysis":
                 x='minute',
                 y='picker_count',
                 color='status',
-                color_discrete_map={'⛔ BLOCKED': '#ff4b4b', '✅ SAFE': '#28a745'},
+                color_discrete_map={'BLOCKED': '#ff4b4b', 'SAFE': '#28a745'},
                 title=f"Forklift Access Timeline (Hour {selected_hour}:00)",
                 labels={'minute': 'Minute of Hour', 'picker_count': 'Concurrent Pickers'},
                 text='picker_count'
@@ -989,10 +994,10 @@ elif page == "🔥 Heatmap Analysis":
             st.plotly_chart(fig_deadzone, use_container_width=True)
             
             if percent_blocked > 50:
-                st.error(f"🚨 **CRITICAL BOTTLENECK:** Aisle B is inaccessible for {blocked_minutes} minutes during this hour! Restocking is impossible.")
+                st.error(f"**CRITICAL BOTTLENECK:** Aisle B is inaccessible for {blocked_minutes} minutes during this hour! Restocking is impossible.")
             
         else:
-            st.success("✅ No congestion in Aisle B during this hour. Forklift has full access.")
+            st.success("No congestion in Aisle B during this hour. Forklift has full access.")
 
     with col2:
         st.markdown(f"### Top 10 Aisles at {selected_hour}:00")
@@ -1028,9 +1033,9 @@ elif page == "🔥 Heatmap Analysis":
 # ============================================================================
 # PAGE 5: TEMPERATURE VIOLATIONS
 # ============================================================================
-elif page == "❄️ Temperature Violations":
-    st.title("❄️ Temperature Zone Violations & Spoilage Risk")
-    st.markdown("### Critical Inventory Compliance Analysis")
+elif page == "Cold Chain Compliance":
+    st.title("Temperature Zone Violations & Spoilage Analysis")
+    st.markdown("### Critical Inventory Compliance Audit")
 
     violations = sku_with_warehouse[sku_with_warehouse['temp_violation'] == True]
 
@@ -1059,7 +1064,7 @@ elif page == "❄️ Temperature Violations":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("### 📊 Violations by Mismatch Type")
+        st.markdown("### Violations by Mismatch Type")
 
         violation_types = violations.groupby(['temp_req', 'temp_zone']).size().reset_index(name='count')
         violation_types['mismatch'] = violation_types['temp_req'] + ' → ' + violation_types['temp_zone']
@@ -1087,7 +1092,7 @@ elif page == "❄️ Temperature Violations":
         st.plotly_chart(fig_types, use_container_width=True)
 
     with col2:
-        st.markdown("### 📦 Violations by Category")
+        st.markdown("### Violations by Category")
 
         cat_violations = violations['category'].value_counts().reset_index()
         cat_violations.columns = ['category', 'count']
@@ -1108,7 +1113,7 @@ elif page == "❄️ Temperature Violations":
     st.markdown("---")
 
     # Critical violations table
-    st.markdown("### 🚨 Critical Violations (Frozen/Refrigerated in Ambient)")
+    st.markdown("### Critical Violations (Frozen/Refrigerated in Ambient)")
 
     critical_violations = violations[
         (violations['temp_req'].isin(['Frozen', 'Refrigerated'])) &
@@ -1117,12 +1122,12 @@ elif page == "❄️ Temperature Violations":
 
     st.dataframe(critical_violations, use_container_width=True, height=400)
 
-    st.error("⚠️ **Immediate Action Required:** These items face complete product loss within 1-4 hours")
+    st.error("**Amount at Risk:** These items face potential product loss.")
 
     st.markdown("---")
 
     # Temperature zone capacity
-    st.markdown("### 🏢 Temperature Zone Capacity Analysis")
+    st.markdown("### Temperature Zone Capacity Analysis")
 
     col1, col2 = st.columns(2)
 
@@ -1210,9 +1215,9 @@ elif page == "❄️ Temperature Violations":
 # ============================================================================
 # PAGE 6: PICKER PERFORMANCE
 # ============================================================================
-elif page == "👤 Picker Performance":
-    st.title("👤 Picker Performance Analysis")
-    st.markdown("### Efficiency Metrics & The Shortcut Paradox")
+elif page == "Workforce Efficiency":
+    st.title("Workforce Performance Analysis")
+    st.markdown("### Efficiency Metrics & Anomaly Detection")
 
     # Calculate picker statistics
     picker_stats = picker_df_enhanced.groupby('picker_id').agg({
@@ -1246,7 +1251,7 @@ elif page == "👤 Picker Performance":
     st.markdown("---")
 
     # Picker comparison
-    st.markdown("### 📊 Picker Efficiency Comparison")
+    st.markdown("### Picker Efficiency Comparison")
 
     col1, col2 = st.columns(2)
 
@@ -1310,7 +1315,7 @@ elif page == "👤 Picker Performance":
     st.markdown("---")
 
     # PICKER-07 deep dive
-    st.markdown("### 🔍 The Shortcut Paradox: PICKER-07 Analysis")
+    st.markdown("### Efficiency Anomaly: PICKER-07 Analysis")
 
     col1, col2 = st.columns([2, 1])
 
@@ -1364,16 +1369,16 @@ elif page == "👤 Picker Performance":
         st.plotly_chart(fig_comparison, use_container_width=True)
 
     with col2:
-        st.markdown("#### 🚨 Anomaly Detected")
+        st.markdown("#### Anomaly Detected")
         st.error("**PICKER-07 Profile:**")
         st.markdown(f"- Distance: **50% lower**")
         st.markdown(f"- Time: **Same as others**")
         st.markdown(f"- Speed: **48% slower**")
         st.markdown("---")
-        st.warning("**Interpretation:**")
+        st.warning("**Analyst Note:**")
         st.markdown("Travels HALF the distance in SAME time = Taking shortcuts through restricted areas")
         st.markdown("---")
-        st.info("**Evidence:**")
+        st.info("**Supporting Data:**")
         st.markdown(f"- Total picks: {int(picker_07_stats['travel_distance_m_count'].values[0]):,}")
         st.markdown("- Pattern: Consistent across 90 weeks")
         st.markdown("- Deviation: Statistically impossible")
@@ -1381,7 +1386,7 @@ elif page == "👤 Picker Performance":
     st.markdown("---")
 
     # Picker performance table
-    st.markdown("### 📋 Complete Picker Statistics")
+    st.markdown("### Complete Picker Statistics")
 
     display_stats = picker_stats[[
         'picker_id',
@@ -1400,8 +1405,8 @@ elif page == "👤 Picker Performance":
 # ============================================================================
 # PAGE 7: DEMAND PATTERNS
 # ============================================================================
-elif page == "📈 Demand Patterns":
-    st.title("📈 Demand Pattern Analysis")
+elif page == "Demand Analytics":
+    st.title("Demand Pattern Analysis")
     st.markdown("### Order Velocity & Temporal Trends")
 
     # Key metrics
@@ -1429,7 +1434,7 @@ elif page == "📈 Demand Patterns":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("### ⏰ 24-Hour Order Pattern")
+        st.markdown("### 24-Hour Order Pattern")
 
         hourly_orders = orders_df.groupby('hour').size().reset_index(name='count')
 
@@ -1455,7 +1460,7 @@ elif page == "📈 Demand Patterns":
         st.plotly_chart(fig_hourly, use_container_width=True)
 
     with col2:
-        st.markdown("### 📅 Day of Week Pattern")
+        st.markdown("### Day of Week Pattern")
 
         daily_orders = orders_df.groupby('day_name').size().reset_index(name='count')
         day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -1478,7 +1483,7 @@ elif page == "📈 Demand Patterns":
     st.markdown("---")
 
     # Weekly trend
-    st.markdown("### 📊 Weekly Order Volume Trend")
+    st.markdown("### Weekly Order Volume Trend")
 
     weekly_orders = orders_df.groupby('week').size().reset_index(name='count')
 
@@ -1511,7 +1516,7 @@ elif page == "📈 Demand Patterns":
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown("### 🏆 Top 20 High-Velocity SKUs")
+        st.markdown("### Top 20 High-Velocity SKUs")
 
         top_20 = sku_frequency.head(20).merge(
             sku_df[['sku_id', 'category', 'temp_req']], 
@@ -1534,7 +1539,7 @@ elif page == "📈 Demand Patterns":
         st.plotly_chart(fig_top20, use_container_width=True)
 
     with col2:
-        st.markdown("### 📦 Category Distribution")
+        st.markdown("### Category Distribution")
 
         category_orders = orders_df.merge(
             sku_df[['sku_id', 'category']], 

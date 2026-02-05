@@ -819,11 +819,70 @@ elif page == "🔥 Heatmap Analysis":
         st.plotly_chart(fig_aisle_b, use_container_width=True)
 
         st.warning("⚠️ **Forklift Constraint:** Max 2 pickers allowed in Aisle B")
-        st.error(f"🚨 **Peak Hour (19:00):** {aisle_b_hourly[aisle_b_hourly['hour']==19]['movements'].values[0]} movements")
+        
+        # --- FORKLIFT DEAD-ZONE CALCULATION (THE TWIST) ---
+        st.markdown("### 🚧 Forklift Dead-zone Analysis (The 'Unspoken' Physics)")
+        st.info("Analysis of minutes where Forklift is BLOCKED (Pickers > 2)")
+        
+        # 1. Filter for Aisle B movements
+        aisle_b_movements = picker_with_location[
+            (picker_with_location['aisle'].str.startswith('B', na=False)) & 
+            (picker_with_location['hour'] == selected_hour)
+        ].copy()
+        
+        if not aisle_b_movements.empty:
+            # 2. Group by minute to find concurrent pickers
+            aisle_b_movements['minute'] = aisle_b_movements['movement_timestamp'].dt.minute
+            minute_counts = aisle_b_movements.groupby('minute')['picker_id'].nunique().reset_index(name='picker_count')
+            
+            # 3. Identify Blocked vs Safe windows
+            minute_counts['status'] = minute_counts['picker_count'].apply(lambda x: '⛔ BLOCKED' if x > 2 else '✅ SAFE')
+            minute_counts['color'] = minute_counts['picker_count'].apply(lambda x: 'red' if x > 2 else 'green')
+            
+            # Metrics
+            blocked_minutes = len(minute_counts[minute_counts['picker_count'] > 2])
+            total_minutes = 60
+            percent_blocked = (blocked_minutes / total_minutes) * 100
+            
+            m1, m2, m3 = st.columns(3)
+            m1.metric("⛔ Blocked Minutes", f"{blocked_minutes} min", f"{percent_blocked:.1f}% of hour")
+            m2.metric("✅ Safe Restock Windows", f"{total_minutes - blocked_minutes} min", "Available duration")
+            m3.metric("⚠️ Forklift Efficiency", f"{100-percent_blocked:.1f}%", "Capacity utilization")
+            
+            # Timeline Visualization
+            fig_deadzone = px.bar(
+                minute_counts,
+                x='minute',
+                y='picker_count',
+                color='status',
+                color_discrete_map={'⛔ BLOCKED': '#ff4b4b', '✅ SAFE': '#28a745'},
+                title=f"Forklift Access Timeline (Hour {selected_hour}:00)",
+                labels={'minute': 'Minute of Hour', 'picker_count': 'Concurrent Pickers'},
+                text='picker_count'
+            )
+            
+            # Add threshold line
+            fig_deadzone.add_hline(y=2.5, line_dash="dash", line_color="orange", annotation_text="Max Capacity (2)")
+            
+            fig_deadzone.update_traces(textposition='outside')
+            fig_deadzone.update_layout(
+                xaxis=dict(tickmode='linear', tick0=0, dtick=5, range=[0, 60]),
+                yaxis=dict(range=[0, max(minute_counts['picker_count'].max()*1.2, 5)]),
+                height=350,
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig_deadzone, use_container_width=True)
+            
+            if percent_blocked > 50:
+                st.error(f"🚨 **CRITICAL BOTTLENECK:** Aisle B is inaccessible for {blocked_minutes} minutes during this hour! Restocking is impossible.")
+            
+        else:
+            st.success("✅ No congestion in Aisle B during this hour. Forklift has full access.")
 
     with col2:
         st.markdown(f"### Top 10 Aisles at {selected_hour}:00")
-
+        
         top_10_hour = hour_data.head(10)
 
         fig_top10 = px.bar(

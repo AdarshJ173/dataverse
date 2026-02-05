@@ -1,5 +1,5 @@
 # 🎓 MASTER SOLUTIONS GUIDE: THEORETICAL & APPLIED WAREHOUSE OPTIMIZATION
-**Author:** Antigravity (AI Agent) for VelocityMart Operations  
+**Author:** Prashlesh Pratap Singh and A.Adarsh Jagannath for VelocityMart Operations  
 **Scope:** Advanced Supply Chain Analytics, Statistical Forensics, Heuristic Optimization, and Systems Engineering.
 
 ---

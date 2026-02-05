@@ -14,34 +14,101 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Custom CSS for better styling with proper text visibility
 st.markdown("""
     <style>
     .main {
         padding: 0rem 1rem;
     }
-    .metric-card {
-        background-color: #f0f2f6;
+    
+    /* Main metric cards styling - dark background with light text */
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
     }
-    .stMetric {
-        background-color: #ffffff;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Metric label - the title text */
+    [data-testid="stMetric"] [data-testid="stMetricLabel"] {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
     }
+    
+    [data-testid="stMetric"] [data-testid="stMetricLabel"] p {
+        color: #ffffff !important;
+    }
+    
+    /* Metric value - the main number */
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #00d4ff !important;
+        font-weight: 700 !important;
+        font-size: 1.8rem !important;
+    }
+    
+    /* Metric delta - the change indicator */
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] {
+        color: #ffd700 !important;
+        font-weight: 500 !important;
+    }
+    
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] svg {
+        fill: #ffd700 !important;
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    [data-testid="stSidebar"] [data-testid="stMetric"] {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        margin-bottom: 10px;
+    }
+    
+    [data-testid="stSidebar"] [data-testid="stMetricLabel"] p {
+        color: #e0e0e0 !important;
+        font-size: 0.85rem !important;
+    }
+    
+    [data-testid="stSidebar"] [data-testid="stMetricValue"] {
+        color: #00d4ff !important;
+        font-size: 1.5rem !important;
+    }
+    
+    /* Titles styling */
     h1 {
-        color: #1f77b4;
+        color: #00d4ff !important;
         font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
+    
     h2 {
-        color: #ff7f0e;
+        color: #ffd700 !important;
         font-weight: 600;
     }
+    
     h3 {
-        color: #2ca02c;
+        color: #00ff88 !important;
+        font-weight: 500;
+    }
+    
+    /* Radio buttons in sidebar */
+    [data-testid="stSidebar"] .stRadio label {
+        color: #ffffff !important;
+    }
+    
+    /* General text visibility */
+    .stMarkdown p, .stMarkdown li {
+        color: #e0e0e0 !important;
+    }
+    
+    /* Error and warning boxes */
+    .stAlert {
+        border-radius: 8px;
     }
     </style>
     """, unsafe_allow_html=True)

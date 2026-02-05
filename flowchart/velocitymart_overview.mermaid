@@ -1,0 +1,87 @@
+graph TB
+    Start[🎯 VelocityMart Challenge<br/>Warehouse Operational Collapse]
+    
+    %% Problem Statement
+    Start --> Problem[📉 THE CRISIS<br/>Fulfillment: 3.8min → 6.2min<br/>Safety Incidents ↑<br/>Operational Entropy]
+    
+    Problem --> Mission[🎪 YOUR MISSION<br/>Interim Head of Operations<br/>Rescue Bangalore Dark Stores]
+    
+    %% Three Main Deliverables
+    Mission --> D1[📊 Deliverable 1:<br/>DASHBOARD<br/>40 Points]
+    Mission --> D2[🗺️ Deliverable 2:<br/>SLOTTING MAP<br/>40 Points]
+    Mission --> D3[📑 Deliverable 3:<br/>EXECUTIVE REPORT<br/>40 Points + 30 Data Points]
+    
+    %% Data Sources
+    Mission --> Data[💾 DATA SOURCES<br/>90 Weeks Historical<br/>⚠️ POISONED DATA]
+    
+    Data --> SKU[sku_master.csv<br/>Product Attributes<br/>🐛 Decimal Drift Errors]
+    Data --> Orders[order_transactions.csv<br/>Transaction Logs<br/>High-Velocity SKUs<br/>Temporal Spikes]
+    Data --> Warehouse[warehouse_constraints.csv<br/>Physical Truth<br/>Weight Limits<br/>Temperature Zones<br/>Aisle Widths]
+    Data --> Picker[picker_movement.csv<br/>GPS Logs<br/>🚨 Illegal Shortcuts<br/>Timestamps & Distance]
+    
+    %% Data Forensics Flow
+    SKU --> Forensics[🔬 DATA FORENSICS<br/>30 Points]
+    Orders --> Forensics
+    Warehouse --> Forensics
+    Picker --> Forensics
+    
+    Forensics --> Clean1[Issue 1:<br/>DECIMAL DRIFT<br/>Weights 10x Higher]
+    Forensics --> Clean2[Issue 2:<br/>SHORTCUT PARADOX<br/>Picker 07 Gaming<br/>Skipping Safety Zones]
+    Forensics --> Clean3[Issue 3:<br/>GHOST INVENTORY<br/>SKUs in Non-Existent Bins]
+    
+    %% Dashboard Requirements
+    Clean1 --> D1
+    Clean2 --> D1
+    Clean3 --> D1
+    
+    D1 --> Dash1[Heatmap:<br/>High-Collision Aisles<br/>Aisle B Bottleneck<br/>19:00 Peak Hours]
+    D1 --> Dash2[Spoilage Risk:<br/>Temperature Violations<br/>Frozen in Ambient Zones<br/>Total Value at Risk]
+    D1 --> Dash3[Forklift Dead-zone:<br/>Restocking Windows<br/>Blocked Picker Access]
+    
+    %% Slotting Map Flow
+    Clean1 --> D2
+    Clean2 --> D2
+    Clean3 --> D2
+    Warehouse --> D2
+    
+    D2 --> Slot1[Optimization:<br/>Limited Labor Budget<br/>Cost per SKU Move<br/>Maximize Impact]
+    D2 --> Slot2[Hard Constraints:<br/>❌ Ambient in Frozen<br/>❌ Weight Limit Violations<br/>= AUTOMATIC ZERO]
+    D2 --> Slot3[Output:<br/>final_slotting_plan.csv<br/>SKU_ID | Bin_ID<br/>Week 91 Assignment]
+    
+    %% Executive Report Flow
+    Forensics --> D3
+    Dash1 --> D3
+    Dash2 --> D3
+    Dash3 --> D3
+    Slot3 --> D3
+    
+    D3 --> Exec1[Slide 1-2:<br/>Chaos Score Metric<br/>Custom Weighted Formula<br/>Warehouse Health Index]
+    D3 --> Exec2[Slide 3:<br/>Phase 1 Roadmap<br/>Top 50 SKUs to Move<br/>Immediate Impact Analysis]
+    D3 --> Exec3[Slide 4-5:<br/>Sensitivity Analysis<br/>+20% Volume Spike<br/>Plan Resilience]
+    
+    %% The Hidden Constraint
+    D1 -.-> Twist[🎭 THE UNSPOKEN PHYSICS<br/>Aisle B Rule:<br/>Max 2 Pickers at Once<br/>Forklift Conflict<br/>⚠️ Not in CSV Data]
+    D2 -.-> Twist
+    D3 -.-> Twist
+    
+    Twist --> Penalty[❗ Account for This<br/>or Face Massive<br/>Simulation Penalties]
+    
+    %% Final Submission
+    Slot3 --> Submit[📤 FINAL SUBMISSION]
+    Dash3 --> Submit
+    Exec3 --> Submit
+    
+    Submit --> File1[File 1:<br/>Report PDF<br/>Forensics + Roadmap]
+    Submit --> File2[File 2:<br/>Dashboard Link<br/>+ Screen Recording]
+    Submit --> File3[File 3:<br/>final_slotting_plan.csv<br/>Tie-Breaker]
+    
+    style Start fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Problem fill:#ff8787,stroke:#c92a2a,stroke-width:2px
+    style Mission fill:#ffd43b,stroke:#fab005,stroke-width:3px
+    style D1 fill:#4dabf7,stroke:#1971c2,stroke-width:2px
+    style D2 fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style D3 fill:#9775fa,stroke:#6741d9,stroke-width:2px
+    style Forensics fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style Twist fill:#ff922b,stroke:#d9480f,stroke-width:3px,color:#fff
+    style Penalty fill:#fa5252,stroke:#c92a2a,stroke-width:2px,color:#fff
+    style Submit fill:#20c997,stroke:#087f5b,stroke-width:3px

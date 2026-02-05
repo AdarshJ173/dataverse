@@ -1,0 +1,135 @@
+graph TB
+    Start[📊 DASHBOARD CREATION<br/>40 Points<br/>Interactive Tool Required]
+    
+    Start --> Tech{Choose Technology}
+    Tech --> T1[Streamlit]
+    Tech --> T2[PowerBI]
+    Tech --> T3[Tableau]
+    Tech --> T4[Other Interactive]
+    
+    T1 --> Build[🔨 BUILD DASHBOARD]
+    T2 --> Build
+    T3 --> Build
+    T4 --> Build
+    
+    %% Component 1: Collision Heatmaps
+    Build --> C1[COMPONENT 1:<br/>Collision Heatmaps<br/>🗺️]
+    
+    C1 --> C1Data[Data Sources:<br/>- picker_movement.csv<br/>- warehouse_constraints.csv]
+    
+    C1Data --> C1Process[Processing:]
+    C1Process --> C1P1[Filter: 19:00 Peak Hours]
+    C1Process --> C1P2[Group by: Aisle & Time]
+    C1Process --> C1P3[Count: Picker Density]
+    
+    C1P1 --> C1Viz[Visualization:]
+    C1P2 --> C1Viz
+    C1P3 --> C1Viz
+    
+    C1Viz --> C1V1[Heatmap Layer:<br/>Color by Congestion]
+    C1Viz --> C1V2[Highlight: Aisle B<br/>Primary Bottleneck]
+    C1Viz --> C1V3[Time Slider:<br/>Show Hourly Patterns]
+    
+    C1V1 --> C1Output[📈 Output:<br/>Interactive Heatmap<br/>Shows High-Traffic Zones]
+    C1V2 --> C1Output
+    C1V3 --> C1Output
+    
+    %% Component 2: Spoilage Risk
+    Build --> C2[COMPONENT 2:<br/>Spoilage Risk Analysis<br/>🌡️]
+    
+    C2 --> C2Data[Data Sources:<br/>- sku_master.csv cleaned<br/>- warehouse_constraints.csv<br/>- Current assignments]
+    
+    C2Data --> C2Process[Processing:]
+    C2Process --> C2P1[Match: SKU Temp Requirements<br/>vs Actual Zone]
+    C2Process --> C2P2[Identify: Violations<br/>Frozen in Ambient, etc.]
+    C2Process --> C2P3[Calculate: Inventory Value<br/>at Risk]
+    
+    C2P1 --> C2Viz[Visualization:]
+    C2P2 --> C2Viz
+    C2P3 --> C2Viz
+    
+    C2Viz --> C2V1[Bar Chart:<br/>Violations by Zone]
+    C2Viz --> C2V2[KPI Card:<br/>Total Value at Risk]
+    C2Viz --> C2V3[Table:<br/>Top 20 Risky SKUs]
+    C2Viz --> C2V4[Pie Chart:<br/>Violation Types]
+    
+    C2V1 --> C2Output[💰 Output:<br/>Risk Dashboard<br/>Shows Temperature Violations]
+    C2V2 --> C2Output
+    C2V3 --> C2Output
+    C2V4 --> C2Output
+    
+    %% Component 3: Forklift Dead-zone
+    Build --> C3[COMPONENT 3:<br/>Forklift Dead-zone<br/>🚧]
+    
+    C3 --> C3Data[Data Sources:<br/>- picker_movement.csv<br/>- warehouse_constraints.csv<br/>- Aisle B capacity rule]
+    
+    C3Data --> C3Process[Processing:]
+    C3Process --> C3P1[Timeline: Forklift<br/>Restocking Windows]
+    C3Process --> C3P2[Overlay: Picker Activity<br/>During Restocking]
+    C3Process --> C3P3[Calculate: Access Blocked<br/>Time & Impact]
+    
+    C3P1 --> C3Viz[Visualization:]
+    C3P2 --> C3Viz
+    C3P3 --> C3Viz
+    
+    C3Viz --> C3V1[Gantt Chart:<br/>Forklift Schedules]
+    C3Viz --> C3V2[Overlap Heatmap:<br/>Picker Conflicts]
+    C3Viz --> C3V3[KPI:<br/>Blocked Access Hours]
+    C3Viz --> C3V4[⚠️ Aisle B Rule:<br/>Max 2 Pickers Visual]
+    
+    C3V1 --> C3Output[🚨 Output:<br/>Conflict Dashboard<br/>Shows Dead-zones]
+    C3V2 --> C3Output
+    C3V3 --> C3Output
+    C3V4 --> C3Output
+    
+    %% Integration
+    C1Output --> Integration[🔗 DASHBOARD INTEGRATION]
+    C2Output --> Integration
+    C3Output --> Integration
+    
+    Integration --> Features[📱 Must-Have Features]
+    
+    Features --> F1[✓ Interactive Filters:<br/>Time, Aisle, SKU]
+    Features --> F2[✓ Drill-Down:<br/>Click for Details]
+    Features --> F3[✓ Export:<br/>Download Data]
+    Features --> F4[✓ Responsive:<br/>Mobile Friendly]
+    
+    F1 --> Final[✅ FINAL DASHBOARD]
+    F2 --> Final
+    F3 --> Final
+    F4 --> Final
+    
+    %% Submission
+    Final --> Submit[📤 SUBMISSION]
+    
+    Submit --> S1[Live Link:<br/>GitHub/Streamlit Cloud<br/>Publicly Accessible]
+    Submit --> S2[Screen Recording:<br/>5-min Demo Video<br/>Show All Features]
+    Submit --> S3[Screenshots:<br/>All 3 Components<br/>PDF Backup]
+    
+    %% Validation
+    S1 --> Valid{Validation Checklist}
+    S2 --> Valid
+    S3 --> Valid
+    
+    Valid --> V1[✓ Shows Aisle B at 19:00?]
+    Valid --> V2[✓ Calculates Spoilage Value?]
+    Valid --> V3[✓ Shows Forklift Conflicts?]
+    Valid --> V4[✓ Interactive & Working?]
+    
+    V1 --> Ready{All Valid?}
+    V2 --> Ready
+    V3 --> Ready
+    V4 --> Ready
+    
+    Ready -->|Yes| Success[🎉 DASHBOARD COMPLETE<br/>40 Points Possible]
+    Ready -->|No| Fix[⚠️ Fix Issues]
+    
+    Fix --> Integration
+    
+    style Start fill:#4c6ef5,stroke:#364fc7,stroke-width:3px,color:#fff
+    style C1 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style C2 fill:#ffd43b,stroke:#fab005,stroke-width:2px
+    style C3 fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style Integration fill:#9775fa,stroke:#6741d9,stroke-width:2px
+    style Final fill:#20c997,stroke:#087f5b,stroke-width:3px
+    style Success fill:#20c997,stroke:#087f5b,stroke-width:3px,color:#fff

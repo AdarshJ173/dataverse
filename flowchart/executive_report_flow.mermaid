@@ -1,0 +1,190 @@
+graph TB
+    Start[📑 EXECUTIVE REPORT<br/>40 Points + 30 Data<br/>5-Slide Board Presentation]
+    
+    Start --> Structure[📊 REPORT STRUCTURE]
+    
+    %% Slide 1-2: Chaos Score
+    Structure --> S1[SLIDES 1-2:<br/>The Chaos Score<br/>⚡]
+    
+    S1 --> S1Purpose[Purpose:<br/>Quantify Warehouse Health<br/>with Custom Metric]
+    
+    S1Purpose --> S1Build[🔨 BUILD CHAOS SCORE]
+    
+    S1Build --> Components[Define Components:]
+    
+    Components --> C1[Component 1:<br/>FULFILLMENT EFFICIENCY<br/>Current: 6.2 min<br/>Target: 3.8 min<br/>Weight: 35%]
+    
+    Components --> C2[Component 2:<br/>SAFETY INCIDENTS<br/>Collisions + Damage<br/>+ Spoilage<br/>Weight: 25%]
+    
+    Components --> C3[Component 3:<br/>SPACE UTILIZATION<br/>Temperature Violations<br/>Weight Capacity Usage<br/>Weight: 15%]
+    
+    Components --> C4[Component 4:<br/>PICKER EFFICIENCY<br/>Distance Traveled<br/>Idle Time<br/>Weight: 15%]
+    
+    Components --> C5[Component 5:<br/>CONGESTION INDEX<br/>Aisle B Bottlenecks<br/>Peak Hour Density<br/>Weight: 10%]
+    
+    C1 --> Formula[📐 WEIGHTED FORMULA]
+    C2 --> Formula
+    C3 --> Formula
+    C4 --> Formula
+    C5 --> Formula
+    
+    Formula --> Calc[Chaos Score = <br/>Σ weighted_components<br/>Scale: 0-100<br/>Lower = Better]
+    
+    Calc --> S1Viz[Visualization:]
+    S1Viz --> S1V1[Gauge Chart:<br/>Current Score vs Target]
+    S1Viz --> S1V2[Component Breakdown:<br/>Radar Chart]
+    S1Viz --> S1V3[Trend Line:<br/>Week 1-90 Progression]
+    
+    S1V1 --> S1Content[📄 SLIDE CONTENT]
+    S1V2 --> S1Content
+    S1V3 --> S1Content
+    
+    S1Content --> S1C1[Slide 1: Metric Definition<br/>- Formula explanation<br/>- Component rationale<br/>- Industry benchmarks]
+    S1Content --> S1C2[Slide 2: Current State<br/>- Score: XX/100<br/>- Week 90 analysis<br/>- Crisis visualization]
+    
+    %% Slide 3: Phase 1 Roadmap
+    Structure --> S3[SLIDE 3:<br/>Phase 1 Roadmap<br/>🎯]
+    
+    S3 --> S3Purpose[Purpose:<br/>Immediate Action Plan<br/>Top 50 SKUs Tonight]
+    
+    S3Purpose --> S3Build[🔨 IDENTIFY TOP 50]
+    
+    S3Build --> S3Method[Selection Method:]
+    
+    S3Method --> M1[Rank All SKUs by<br/>Impact Score]
+    
+    M1 --> M1A[Impact = <br/>Velocity × <br/>Distance_Reduction ×<br/>Collision_Reduction]
+    
+    M1A --> M2[Filter Constraints:<br/>- Fits labor budget<br/>- No hard violations<br/>- Addresses Aisle B]
+    
+    M2 --> M3[Select Top 50:<br/>Maximum Bang-for-Buck]
+    
+    M3 --> S3Viz[Visualization:]
+    
+    S3Viz --> S3V1[Table:<br/>Top 50 SKUs with:<br/>- Current location<br/>- Target location<br/>- Expected impact]
+    
+    S3Viz --> S3V2[Before/After Map:<br/>Visual bin changes]
+    
+    S3Viz --> S3V3[Impact Chart:<br/>Projected improvements:<br/>- Time saved<br/>- Collisions reduced<br/>- Value secured]
+    
+    S3V1 --> S3Content[📄 SLIDE CONTENT]
+    S3V2 --> S3Content
+    S3V3 --> S3Content
+    
+    S3Content --> S3C1[Priority Moves:<br/>List top 10-20<br/>with rationale]
+    S3Content --> S3C2[Quick Wins:<br/>Immediate metrics<br/>improvement projection]
+    S3Content --> S3C3[Timeline:<br/>Tonight: 50 moves<br/>Week 91: Full plan]
+    
+    %% Slides 4-5: Sensitivity Analysis
+    Structure --> S4[SLIDES 4-5:<br/>Sensitivity Analysis<br/>📈]
+    
+    S4 --> S4Purpose[Purpose:<br/>Test Plan Resilience<br/>+20% Volume Spike]
+    
+    S4Purpose --> S4Build[🔨 SCENARIO TESTING]
+    
+    S4Build --> Scenarios[Define Scenarios:]
+    
+    Scenarios --> Sc1[BASELINE:<br/>Current projections<br/>Week 91 expected volume]
+    
+    Scenarios --> Sc2[SCENARIO 1:<br/>+20% Overall Volume<br/>Proportional increase]
+    
+    Scenarios --> Sc3[SCENARIO 2:<br/>+20% Peak Hour Only<br/>19:00 surge test]
+    
+    Scenarios --> Sc4[SCENARIO 3:<br/>+20% Top 20 SKUs<br/>Targeted spike]
+    
+    Sc1 --> Simulate[🔄 SIMULATE EACH]
+    Sc2 --> Simulate
+    Sc3 --> Simulate
+    Sc4 --> Simulate
+    
+    Simulate --> Metrics[Calculate Metrics:<br/>For Each Scenario]
+    
+    Metrics --> Met1[Fulfillment Time]
+    Metrics --> Met2[Collision Events]
+    Metrics --> Met3[Aisle B Capacity %]
+    Metrics --> Met4[Chaos Score]
+    
+    Met1 --> Compare[📊 COMPARATIVE ANALYSIS]
+    Met2 --> Compare
+    Met3 --> Compare
+    Met4 --> Compare
+    
+    Compare --> S4Viz[Visualization:]
+    
+    S4Viz --> S4V1[Slide 4:<br/>Scenario Comparison Table<br/>All metrics side-by-side]
+    
+    S4Viz --> S4V2[Slide 4:<br/>Waterfall Chart<br/>Impact breakdown]
+    
+    S4Viz --> S4V3[Slide 5:<br/>Stress Test Results<br/>Where plan breaks?]
+    
+    S4Viz --> S4V4[Slide 5:<br/>Mitigation Strategies<br/>Backup plans]
+    
+    S4V1 --> S4Content[📄 SLIDE CONTENT]
+    S4V2 --> S4Content
+    S4V3 --> S4Content
+    S4V4 --> S4Content
+    
+    S4Content --> S4C1[Resilience Score:<br/>Plan holds up to<br/>+X% volume]
+    S4Content --> S4C2[Breaking Points:<br/>Critical thresholds<br/>identified]
+    S4Content --> S4C3[Recommendations:<br/>Contingency actions<br/>if volumes spike]
+    
+    %% Integration
+    S1C1 --> Integrate[🔗 INTEGRATE SLIDES]
+    S1C2 --> Integrate
+    S3Content --> Integrate
+    S4Content --> Integrate
+    
+    Integrate --> Polish[✨ POLISH & DESIGN]
+    
+    Polish --> Design[Design Elements:]
+    Design --> D1[Executive-Level Graphics]
+    Design --> D2[Clear Data Viz]
+    Design --> D3[Consistent Branding]
+    Design --> D4[No Jargon]
+    
+    D1 --> Flow[📖 NARRATIVE FLOW]
+    D2 --> Flow
+    D3 --> Flow
+    D4 --> Flow
+    
+    Flow --> F1[Opening:<br/>The Crisis<br/>Chaos Score reveals depth]
+    Flow --> F2[The Plan:<br/>50 SKUs Tonight<br/>Quick wins identified]
+    Flow --> F3[The Test:<br/>Resilience proven<br/>Ready for growth]
+    Flow --> F4[The Ask:<br/>Approve resources<br/>Execute immediately]
+    
+    F1 --> Final[✅ FINAL DECK]
+    F2 --> Final
+    F3 --> Final
+    F4 --> Final
+    
+    %% Submission Package
+    Final --> Package[📦 COMPLETE PACKAGE]
+    
+    Package --> P1[Report PDF:<br/>- Data forensics<br/>- Methodology<br/>- 5-slide deck<br/>- Appendix]
+    
+    Package --> P2[Supporting Docs:<br/>- Calculation sheets<br/>- Simulation results<br/>- Assumptions log]
+    
+    P1 --> Review{Quality Review}
+    P2 --> Review
+    
+    Review --> R1[✓ Clear narrative?]
+    Review --> R2[✓ Data-backed?]
+    Review --> R3[✓ Actionable?]
+    Review --> R4[✓ Professional?]
+    
+    R1 --> Ready{All Checks<br/>Pass?}
+    R2 --> Ready
+    R3 --> Ready
+    R4 --> Ready
+    
+    Ready -->|Yes| Submit[🎉 SUBMIT REPORT<br/>70 Points Possible]
+    Ready -->|No| Revise[⚠️ Revise Content]
+    
+    Revise --> Polish
+    
+    style Start fill:#9775fa,stroke:#6741d9,stroke-width:3px,color:#fff
+    style S1 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style S3 fill:#ffd43b,stroke:#fab005,stroke-width:2px
+    style S4 fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style Submit fill:#20c997,stroke:#087f5b,stroke-width:3px,color:#fff
+    style Formula fill:#4c6ef5,stroke:#364fc7,stroke-width:2px

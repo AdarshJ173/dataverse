@@ -1,0 +1,219 @@
+graph TB
+    Start([🏁 START COMPETITION<br/>VelocityMart Challenge])
+    
+    Start --> Kickoff[📋 KICKOFF<br/>Understand Problem<br/>Read Manual]
+    
+    Kickoff --> Team[👥 Team Assembly<br/>Assign Roles:<br/>- Data Analyst<br/>- Dashboard Developer<br/>- Optimization Expert<br/>- Presenter]
+    
+    Team --> Phase1[PHASE 1:<br/>📥 DATA INGESTION<br/>Days 1-2]
+    
+    %% Phase 1: Data Ingestion
+    Phase1 --> Load[Load All Files:]
+    Load --> L1[✓ sku_master.csv]
+    Load --> L2[✓ order_transactions.csv]
+    Load --> L3[✓ warehouse_constraints.csv]
+    Load --> L4[✓ picker_movement.csv]
+    
+    L1 --> Explore[🔍 Initial Exploration]
+    L2 --> Explore
+    L3 --> Explore
+    L4 --> Explore
+    
+    Explore --> E1[Data Profiling:<br/>- Row counts<br/>- Missing values<br/>- Data types<br/>- Value ranges]
+    
+    E1 --> E2[Schema Validation:<br/>- Expected columns?<br/>- Relationship keys?<br/>- Format consistency?]
+    
+    E2 --> Phase2[PHASE 2:<br/>🔬 DATA FORENSICS<br/>Days 3-5<br/>⏰ 30 Points]
+    
+    %% Phase 2: Data Forensics
+    Phase2 --> Forensics[Forensic Analysis:]
+    
+    Forensics --> F1[🔍 Hunt 1: Decimal Drift<br/>Scan weight fields<br/>Flag 10x anomalies<br/>Correct unit errors]
+    
+    Forensics --> F2[🔍 Hunt 2: Shortcuts<br/>Analyze GPS patterns<br/>Expose Picker 07<br/>Recalculate true times]
+    
+    Forensics --> F3[🔍 Hunt 3: Ghost Bins<br/>Cross-ref assignments<br/>Find invalid Bin_IDs<br/>Document violations]
+    
+    F1 --> Clean1[Clean Dataset v1]
+    F2 --> Clean1
+    F3 --> Clean1
+    
+    Clean1 --> Validate1{Pass QA?}
+    Validate1 -->|No| Forensics
+    Validate1 -->|Yes| Phase3A[PHASE 3A:<br/>📊 DASHBOARD BUILD<br/>Days 6-9<br/>⏰ 40 Points]
+    
+    Validate1 -->|Yes| Phase3B[PHASE 3B:<br/>🗺️ OPTIMIZATION<br/>Days 6-9<br/>⏰ 40 Points]
+    
+    %% Phase 3A: Dashboard (Parallel)
+    Phase3A --> Dash[Dashboard Development:]
+    
+    Dash --> D1[Component 1:<br/>Collision Heatmaps<br/>Focus: Aisle B @ 19:00]
+    Dash --> D2[Component 2:<br/>Spoilage Risk<br/>Temp violation value]
+    Dash --> D3[Component 3:<br/>Forklift Dead-zone<br/>Unspoken physics]
+    
+    D1 --> DashInt[Integration:<br/>Interactive filters<br/>Drill-down features]
+    D2 --> DashInt
+    D3 --> DashInt
+    
+    DashInt --> Deploy[🚀 Deploy Online:<br/>Streamlit/GitHub<br/>Test accessibility]
+    
+    Deploy --> Record[📹 Record Demo:<br/>5-min walkthrough<br/>Show all features]
+    
+    %% Phase 3B: Optimization (Parallel)
+    Phase3B --> Opt[Optimization Engine:]
+    
+    Opt --> O1[Define Objective:<br/>Minimize travel +<br/>collisions + moves]
+    
+    Opt --> O2[Set Constraints:<br/>HARD: Temp, Weight, Bins<br/>SOFT: Velocity, Co-location]
+    
+    Opt --> O3[Code Algorithm:<br/>Choose method:<br/>Greedy/GA/LP/Hybrid]
+    
+    O1 --> RunOpt[▶️ Run Optimization]
+    O2 --> RunOpt
+    O3 --> RunOpt
+    
+    RunOpt --> SimTest[🧪 Simulate Week 91<br/>Test all scenarios:<br/>- Baseline<br/>- +20% volume<br/>- Peak hour surge]
+    
+    SimTest --> ValidOpt{Meets Goals?}
+    ValidOpt -->|No| Tune[Tune Parameters]
+    Tune --> RunOpt
+    ValidOpt -->|Yes| Generate[📄 Generate:<br/>final_slotting_plan.csv<br/>SKU_ID | Bin_ID]
+    
+    %% Convergence Point
+    Record --> Phase4[PHASE 4:<br/>📑 EXECUTIVE REPORT<br/>Days 10-12<br/>⏰ 40 Points]
+    Generate --> Phase4
+    
+    %% Phase 4: Report
+    Phase4 --> Report[Build 5-Slide Deck:]
+    
+    Report --> R1[Slides 1-2:<br/>Chaos Score Metric<br/>Custom formula<br/>Current state analysis]
+    
+    Report --> R2[Slide 3:<br/>Phase 1 Roadmap<br/>Top 50 SKUs tonight<br/>Impact projections]
+    
+    Report --> R3[Slides 4-5:<br/>Sensitivity Analysis<br/>+20% volume tests<br/>Resilience proof]
+    
+    R1 --> Compile[📚 Compile Full Report]
+    R2 --> Compile
+    R3 --> Compile
+    
+    Compile --> Include[Include:]
+    Include --> I1[✓ Data forensics details]
+    Include --> I2[✓ Cleaning methodology]
+    Include --> I3[✓ Dashboard screenshots]
+    Include --> I4[✓ Optimization logic]
+    Include --> I5[✓ Assumptions & limitations]
+    
+    I1 --> PDF[📄 Export to PDF]
+    I2 --> PDF
+    I3 --> PDF
+    I4 --> PDF
+    I5 --> PDF
+    
+    %% Phase 5: Final QA
+    PDF --> Phase5[PHASE 5:<br/>✅ FINAL QA<br/>Day 13]
+    
+    Phase5 --> Check[Comprehensive Checklist:]
+    
+    Check --> C1{Data Forensics<br/>30 pts?}
+    C1 --> C1A[✓ Decimal drift documented]
+    C1 --> C1B[✓ Shortcuts exposed]
+    C1 --> C1C[✓ Ghost bins found]
+    
+    Check --> C2{Dashboard<br/>40 pts?}
+    C2 --> C2A[✓ Live link works]
+    C2 --> C2B[✓ All 3 components present]
+    C2 --> C2C[✓ Video recorded]
+    C2 --> C2D[✓ Shows Aisle B @ 19:00]
+    
+    Check --> C3{Slotting Map<br/>40 pts?}
+    C3 --> C3A[✓ CSV format correct]
+    C3 --> C3B[✓ No hard constraint violations]
+    C3 --> C3C[✓ Addresses Aisle B rule]
+    C3 --> C3D[✓ Within labor budget]
+    
+    Check --> C4{Report<br/>40 pts?}
+    C4 --> C4A[✓ Chaos Score defined]
+    C4 --> C4B[✓ Top 50 identified]
+    C4 --> C4C[✓ Sensitivity done]
+    C4 --> C4D[✓ Professional quality]
+    
+    C1A --> AllReady{All Items<br/>Complete?}
+    C1B --> AllReady
+    C1C --> AllReady
+    C2A --> AllReady
+    C2B --> AllReady
+    C2C --> AllReady
+    C2D --> AllReady
+    C3A --> AllReady
+    C3B --> AllReady
+    C3C --> AllReady
+    C3D --> AllReady
+    C4A --> AllReady
+    C4B --> AllReady
+    C4C --> AllReady
+    C4D --> AllReady
+    
+    AllReady -->|No| Fix[⚠️ Fix Issues<br/>Priority Order]
+    AllReady -->|Yes| Package[📦 PACKAGE SUBMISSION]
+    
+    Fix --> Urgent{Critical?}
+    Urgent -->|Yes| Phase2
+    Urgent -->|No| Polish[Polish & Improve]
+    Polish --> Phase5
+    
+    %% Submission
+    Package --> Prep[Prepare Files:]
+    
+    Prep --> File1[✅ File 1:<br/>Report.pdf<br/>Complete documentation]
+    Prep --> File2[✅ File 2:<br/>Dashboard Link + Video<br/>Accessible & working]
+    Prep --> File3[✅ File 3:<br/>final_slotting_plan.csv<br/>Tie-breaker file]
+    
+    File1 --> Folder[Create Team Folder:<br/>Upload to Drive]
+    File2 --> Folder
+    File3 --> Folder
+    
+    Folder --> Submit[🚀 SUBMIT<br/>Before Deadline]
+    
+    Submit --> Verify[🔍 Post-Submission Verify:]
+    Verify --> V1[✓ All files uploaded?]
+    Verify --> V2[✓ Links accessible?]
+    Verify --> V3[✓ Folder named correctly?]
+    
+    V1 --> Backup[💾 Keep Local Backups]
+    V2 --> Backup
+    V3 --> Backup
+    
+    %% Presentation Phase
+    Backup --> Wait[⏳ WAIT FOR RESULTS<br/>Prepare for Presentation]
+    
+    Wait --> Present[🎤 PRESENTATION DAY]
+    
+    Present --> Prep1[Prepare:<br/>- 10-min pitch<br/>- Demo rehearsal<br/>- Q&A prep]
+    
+    Prep1 --> Deliver[🎯 DELIVER PRESENTATION<br/>Show Dashboard Live<br/>Explain Decisions]
+    
+    Deliver --> QA[❓ Answer Questions<br/>Defend Methodology]
+    
+    QA --> Results[⭐ RESULTS ANNOUNCED<br/>150 Points Total]
+    
+    Results --> Breakdown[Score Breakdown:]
+    Breakdown --> B1[Data Forensics: __/30]
+    Breakdown --> B2[Dashboard: __/40]
+    Breakdown --> B3[Slotting Map: __/40]
+    Breakdown --> B4[Report: __/40]
+    
+    B1 --> Final([🏆 COMPETITION END])
+    B2 --> Final
+    B3 --> Final
+    B4 --> Final
+    
+    style Start fill:#4c6ef5,stroke:#364fc7,stroke-width:4px,color:#fff
+    style Phase1 fill:#fa5252,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Phase2 fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Phase3A fill:#4dabf7,stroke:#1971c2,stroke-width:3px,color:#fff
+    style Phase3B fill:#51cf66,stroke:#2b8a3e,stroke-width:3px,color:#fff
+    style Phase4 fill:#9775fa,stroke:#6741d9,stroke-width:3px,color:#fff
+    style Phase5 fill:#ffd43b,stroke:#fab005,stroke-width:3px
+    style Submit fill:#20c997,stroke:#087f5b,stroke-width:4px,color:#fff
+    style Final fill:#20c997,stroke:#087f5b,stroke-width:4px,color:#fff
+    style AllReady fill:#868e96,stroke:#495057,stroke-width:2px

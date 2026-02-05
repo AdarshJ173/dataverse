@@ -1,0 +1,141 @@
+graph TB
+    subgraph Legend
+        L1[🔑 Primary Key]
+        L2[🔗 Foreign Key]
+        L3[📊 Metric Field]
+        L4[⚠️ Corrupted Data]
+    end
+    
+    subgraph SKU_MASTER["📦 sku_master.csv<br/>Product Catalog"]
+        SKU1[🔑 SKU_ID<br/>Unique Product ID]
+        SKU2[Product_Name<br/>Display name]
+        SKU3[⚠️ Weight_kg<br/>DECIMAL DRIFT!<br/>Some 10x wrong]
+        SKU4[Length_cm<br/>Width_cm<br/>Height_cm]
+        SKU5[Fragility<br/>Low/Medium/High]
+        SKU6[Temperature_Req<br/>Frozen/Chilled/Ambient]
+        SKU7[Current_Bin_ID<br/>⚠️ GHOST INVENTORY!<br/>Some bins don't exist]
+    end
+    
+    subgraph ORDER_TRANS["🛒 order_transactions.csv<br/>Transaction History"]
+        ORD1[Transaction_ID<br/>Unique order]
+        ORD2[🔗 SKU_ID<br/>Links to products]
+        ORD3[Week<br/>1-90 historical]
+        ORD4[📊 Order_Quantity<br/>Units ordered]
+        ORD5[Timestamp<br/>Date & Time]
+        ORD6[Hour<br/>Peak: 19:00]
+        ORD7[Day_of_Week<br/>Pattern analysis]
+    end
+    
+    subgraph PICKER_MOVE["🚶 picker_movement.csv<br/>GPS Movement Logs"]
+        PICK1[Movement_ID<br/>Unique log entry]
+        PICK2[Picker_ID<br/>e.g., Picker_07]
+        PICK3[🔗 SKU_ID<br/>Item picked]
+        PICK4[🔗 Bin_ID<br/>Location visited]
+        PICK5[Timestamp<br/>When picked]
+        PICK6[📊 Distance_m<br/>Travel distance]
+        PICK7[📊 Time_seconds<br/>Duration]
+        PICK8[⚠️ Path_Type<br/>SHORTCUTS!<br/>Illegal routes]
+        PICK9[Aisle<br/>Which aisle]
+    end
+    
+    subgraph WAREHOUSE["🏭 warehouse_constraints.csv<br/>Physical Facility"]
+        WH1[🔑 Bin_ID<br/>Unique location<br/>e.g., A-01-01]
+        WH2[Aisle<br/>A, B, C, etc.<br/>⚠️ Aisle B bottleneck]
+        WH3[Row<br/>Position number]
+        WH4[Level<br/>Height position]
+        WH5[Max_Weight_kg<br/>Capacity limit]
+        WH6[Temperature_Zone<br/>Frozen/Chilled/Ambient]
+        WH7[📊 Aisle_Width_cm<br/>Congestion factor]
+        WH8[Distance_from_Entry_m<br/>Travel baseline]
+        WH9[🎭 Special_Rules<br/>Unspoken Physics:<br/>Aisle B max 2 pickers<br/>+ forklift conflicts]
+    end
+    
+    %% Relationships - SKU to Orders
+    SKU1 -->|1:Many| ORD2
+    ORD2 -.->|Calculate| Velocity[📊 SKU Velocity<br/>Orders per week]
+    ORD5 -.->|Aggregate| Peak[📊 Peak Hours<br/>19:00 surge]
+    
+    %% Relationships - SKU to Picker
+    SKU1 -->|1:Many| PICK3
+    PICK3 -.->|Frequency| CoOccur[📊 Co-occurrence<br/>Paired items]
+    
+    %% Relationships - Warehouse to Picker
+    WH1 -->|1:Many| PICK4
+    PICK4 -.->|Count| Congestion[📊 Bin Access<br/>Frequency]
+    PICK9 -.->|Heatmap| AisleB[⚠️ Aisle B<br/>Collision Zone]
+    
+    %% Relationships - SKU to Warehouse (Current State)
+    SKU7 -->|Current| WH1
+    WH1 -.->|Validate| Ghost[🐛 Ghost Check<br/>Invalid Bin_IDs]
+    
+    %% Temperature Validation
+    SKU6 -.->|Must Match| WH6
+    WH6 -.->|Violation?| Spoilage[⚠️ Spoilage Risk<br/>Temp mismatch]
+    
+    %% Weight Validation
+    SKU3 -.->|Sum per bin| WH5
+    WH5 -.->|Exceeds?| WeightViol[⚠️ Weight Violation<br/>Safety risk]
+    
+    %% Distance Calculation
+    PICK6 -.->|Optimize| WH8
+    WH8 -.->|Minimize| TravelOpt[🎯 Travel Optimization<br/>Reduce fulfillment time]
+    
+    %% Shortcut Detection
+    PICK7 -.->|Analyze| PICK6
+    PICK6 -.->|Speed check| ShortcutDetect[🔍 Shortcut Detection<br/>Impossible speeds]
+    ShortcutDetect -.->|Flag| PICK2
+    
+    %% Decimal Drift Detection
+    SKU3 -.->|Compare| Industry[📚 Industry Standards<br/>Typical product weights]
+    Industry -.->|10x check| DriftFix[🔧 Decimal Correction<br/>Fix unit errors]
+    
+    %% Optimization Inputs
+    Velocity -.-> OptEngine[🎯 OPTIMIZATION<br/>ENGINE]
+    CoOccur -.-> OptEngine
+    TravelOpt -.-> OptEngine
+    Congestion -.-> OptEngine
+    WH5 -.-> OptEngine
+    WH6 -.-> OptEngine
+    
+    OptEngine --> Output[📄 OUTPUT:<br/>final_slotting_plan.csv<br/>SKU_ID | Bin_ID]
+    
+    %% Dashboard Inputs
+    AisleB -.-> Dashboard[📊 DASHBOARD]
+    Spoilage -.-> Dashboard
+    WeightViol -.-> Dashboard
+    Peak -.-> Dashboard
+    WH9 -.-> Dashboard
+    
+    Dashboard --> Viz1[Collision Heatmap]
+    Dashboard --> Viz2[Spoilage Risk]
+    Dashboard --> Viz3[Forklift Dead-zone]
+    
+    %% Key Metrics
+    subgraph Metrics["📈 KEY METRICS TO CALCULATE"]
+        M1[SKU Velocity:<br/>orders per week]
+        M2[Travel Distance:<br/>total picker movement]
+        M3[Collision Events:<br/>concurrent access]
+        M4[Spoilage Value:<br/>temp violations]
+        M5[Fulfillment Time:<br/>avg pick time]
+        M6[Aisle Congestion:<br/>picker density]
+    end
+    
+    Velocity -.-> M1
+    PICK6 -.-> M2
+    Congestion -.-> M3
+    Spoilage -.-> M4
+    PICK7 -.-> M5
+    AisleB -.-> M6
+    
+    style SKU_MASTER fill:#e7f5ff,stroke:#1971c2,stroke-width:2px
+    style ORDER_TRANS fill:#fff3bf,stroke:#fab005,stroke-width:2px
+    style PICKER_MOVE fill:#d3f9d8,stroke:#2b8a3e,stroke-width:2px
+    style WAREHOUSE fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px
+    style OptEngine fill:#9775fa,stroke:#6741d9,stroke-width:3px,color:#fff
+    style Dashboard fill:#4dabf7,stroke:#1971c2,stroke-width:3px,color:#fff
+    style Output fill:#20c997,stroke:#087f5b,stroke-width:3px,color:#fff
+    style Metrics fill:#f8f9fa,stroke:#868e96,stroke-width:2px
+    style SKU3 fill:#ff8787,stroke:#c92a2a
+    style SKU7 fill:#ff8787,stroke:#c92a2a
+    style PICK8 fill:#ff8787,stroke:#c92a2a
+    style WH9 fill:#ffd43b,stroke:#fab005

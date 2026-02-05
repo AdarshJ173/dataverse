@@ -1,0 +1,109 @@
+graph TB
+    Start[🔍 DATA FORENSICS PIPELINE<br/>30 Points]
+    
+    %% Input Data
+    Start --> Input[📥 INPUT DATA<br/>90 Weeks Historical]
+    
+    Input --> SKU[sku_master.csv]
+    Input --> Orders[order_transactions.csv]
+    Input --> Warehouse[warehouse_constraints.csv]
+    Input --> Picker[picker_movement.csv]
+    
+    %% Problem 1: Decimal Drift
+    SKU --> Analysis1{🔬 ANALYSIS 1:<br/>Decimal Drift Detection}
+    
+    Analysis1 --> Check1[Check Weight Fields]
+    Check1 --> Calc1[Compare Against<br/>Industry Standards]
+    Calc1 --> Flag1[Flag SKUs with<br/>10x Weight Anomalies]
+    Flag1 --> Fix1[✅ Correct Unit Errors<br/>kg → g conversion]
+    
+    Fix1 --> Doc1[📝 Document:<br/>- Which SKUs affected<br/>- Original vs Corrected<br/>- Validation method]
+    
+    %% Problem 2: Shortcut Paradox
+    Picker --> Analysis2{🔬 ANALYSIS 2:<br/>Shortcut Paradox}
+    
+    Analysis2 --> Check2[Analyze GPS Patterns<br/>Per Picker]
+    Check2 --> Calc2[Calculate:<br/>Distance vs Time<br/>Speed Anomalies]
+    Calc2 --> Flag2[Flag Impossible Speeds<br/>Picker 07 Suspect]
+    Flag2 --> Map1[Map Movement Paths]
+    Map1 --> Identify[Identify Safety Zone<br/>Violations]
+    
+    Identify --> Fix2[✅ Mark Invalid Routes<br/>Recalculate True Times]
+    
+    Fix2 --> Doc2[📝 Document:<br/>- Pickers gaming system<br/>- Proof of shortcuts<br/>- Impact on metrics]
+    
+    %% Problem 3: Ghost Inventory
+    SKU --> Analysis3{🔬 ANALYSIS 3:<br/>Ghost Inventory}
+    Warehouse --> Analysis3
+    
+    Analysis3 --> Check3[Extract Valid Bin_IDs<br/>from Constraints]
+    Check3 --> Cross[Cross-Reference<br/>SKU Assignments]
+    Cross --> Flag3[Flag SKUs in<br/>Non-Existent Bins]
+    Flag3 --> Validate[Validate Against<br/>Physical Topology]
+    
+    Validate --> Fix3[✅ Identify Root Cause<br/>Reassignment Strategy]
+    
+    Fix3 --> Doc3[📝 Document:<br/>- Ghost bins found<br/>- Affected SKUs<br/>- How this happened]
+    
+    %% Additional Cleaning
+    Orders --> Analysis4{🔬 ANALYSIS 4:<br/>Order Pattern Analysis}
+    
+    Analysis4 --> Peak[Identify Peak Hours<br/>19:00 Focus]
+    Peak --> Velocity[Calculate SKU<br/>Velocity Metrics]
+    Velocity --> Temporal[Detect Temporal<br/>Spikes & Patterns]
+    
+    Temporal --> Doc4[📝 Document:<br/>- High-velocity SKUs<br/>- Peak hour patterns<br/>- Seasonal trends]
+    
+    %% Constraint Validation
+    Warehouse --> Analysis5{🔬 ANALYSIS 5:<br/>Constraint Validation}
+    
+    Analysis5 --> Temp[Temperature Zones<br/>Validation]
+    Analysis5 --> Weight[Weight Limits<br/>Validation]
+    Analysis5 --> Aisle[Aisle Width<br/>Validation]
+    
+    Temp --> Violations[Current Violations<br/>Check]
+    Weight --> Violations
+    Aisle --> Violations
+    
+    Violations --> Doc5[📝 Document:<br/>- Current violations<br/>- Risk assessment<br/>- Spoilage value]
+    
+    %% Integration
+    Doc1 --> Clean[🧹 CLEANED DATASET]
+    Doc2 --> Clean
+    Doc3 --> Clean
+    Doc4 --> Clean
+    Doc5 --> Clean
+    
+    Clean --> Validate2{✓ Quality Gates}
+    
+    Validate2 --> Q1[No Decimal Drift?]
+    Validate2 --> Q2[Shortcuts Identified?]
+    Validate2 --> Q3[All Bins Valid?]
+    Validate2 --> Q4[Constraints Checked?]
+    
+    Q1 --> Pass{All Pass?}
+    Q2 --> Pass
+    Q3 --> Pass
+    Q4 --> Pass
+    
+    Pass -->|Yes| Output[✅ CLEAN DATA<br/>Ready for Analysis]
+    Pass -->|No| Recheck[⚠️ Re-analyze<br/>Failed Checks]
+    
+    Recheck --> Analysis1
+    
+    Output --> Report[📊 CLEANING REPORT<br/>For Submission]
+    
+    Report --> R1[Section 1:<br/>Methodology]
+    Report --> R2[Section 2:<br/>Issues Found]
+    Report --> R3[Section 3:<br/>Corrections Made]
+    Report --> R4[Section 4:<br/>Validation Results]
+    
+    style Start fill:#4c6ef5,stroke:#364fc7,stroke-width:3px,color:#fff
+    style Analysis1 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style Analysis2 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style Analysis3 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style Analysis4 fill:#ffd43b,stroke:#fab005,stroke-width:2px
+    style Analysis5 fill:#ffd43b,stroke:#fab005,stroke-width:2px
+    style Clean fill:#51cf66,stroke:#2b8a3e,stroke-width:3px,color:#fff
+    style Output fill:#20c997,stroke:#087f5b,stroke-width:3px,color:#fff
+    style Pass fill:#868e96,stroke:#495057,stroke-width:2px

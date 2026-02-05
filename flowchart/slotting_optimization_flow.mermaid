@@ -1,0 +1,175 @@
+graph TB
+    Start[🗺️ SLOTTING OPTIMIZATION<br/>40 Points<br/>Week 91 Plan]
+    
+    Start --> Input[📥 INPUTS]
+    
+    Input --> I1[Clean SKU Data:<br/>- Dimensions<br/>- Weight<br/>- Temperature Needs<br/>- Fragility]
+    Input --> I2[Order Velocity:<br/>- High-velocity SKUs<br/>- Co-occurrence Patterns<br/>- Peak Hour Demand]
+    Input --> I3[Warehouse Layout:<br/>- Bin Locations<br/>- Aisle Widths<br/>- Temperature Zones<br/>- Weight Limits]
+    Input --> I4[Current State:<br/>- Existing Assignments<br/>- Move Costs<br/>- Labor Budget]
+    
+    I1 --> Prep[📊 DATA PREPARATION]
+    I2 --> Prep
+    I3 --> Prep
+    I4 --> Prep
+    
+    Prep --> P1[Calculate SKU Metrics]
+    P1 --> P1A[Velocity Score:<br/>Orders per week]
+    P1 --> P1B[Travel Distance:<br/>From entry point]
+    P1 --> P1C[Co-picking Score:<br/>Frequently paired items]
+    
+    Prep --> P2[Calculate Bin Metrics]
+    P2 --> P2A[Accessibility Score:<br/>Aisle congestion]
+    P2 --> P2B[Temperature Zone]
+    P2 --> P2C[Weight Capacity<br/>Available]
+    
+    P1A --> Optimize[🎯 OPTIMIZATION ENGINE]
+    P1B --> Optimize
+    P1C --> Optimize
+    P2A --> Optimize
+    P2B --> Optimize
+    P2C --> Optimize
+    
+    %% Objective Function
+    Optimize --> Objective[📐 OBJECTIVE FUNCTION<br/>Minimize:]
+    
+    Objective --> O1[Travel Time:<br/>Σ distance × velocity × weight]
+    Objective --> O2[Congestion:<br/>Picker collisions in Aisle B]
+    Objective --> O3[Move Cost:<br/>Relocation × labor_cost]
+    
+    O1 --> Weight1[Weight: 0.5]
+    O2 --> Weight2[Weight: 0.3]
+    O3 --> Weight3[Weight: 0.2]
+    
+    Weight1 --> OF[Weighted Sum:<br/>Minimize Total Cost]
+    Weight2 --> OF
+    Weight3 --> OF
+    
+    %% Hard Constraints
+    OF --> HardC[🚫 HARD CONSTRAINTS<br/>MUST SATISFY]
+    
+    HardC --> HC1{Constraint 1:<br/>Temperature Match}
+    HC1 --> HC1A[Frozen → Frozen Zone]
+    HC1 --> HC1B[Chilled → Chilled Zone]
+    HC1 --> HC1C[Ambient → Ambient Zone]
+    HC1A --> HC1V[❌ VIOLATION = 0 POINTS]
+    HC1B --> HC1V
+    HC1C --> HC1V
+    
+    HardC --> HC2{Constraint 2:<br/>Weight Limits}
+    HC2 --> HC2A[Sum SKU weights in bin<br/>≤ Max shelf capacity]
+    HC2A --> HC2V[❌ VIOLATION = 0 POINTS]
+    
+    HardC --> HC3{Constraint 3:<br/>Bin Existence}
+    HC3 --> HC3A[Bin_ID must exist in<br/>warehouse_constraints.csv]
+    HC3A --> HC3V[❌ VIOLATION = 0 POINTS]
+    
+    HardC --> HC4{Constraint 4:<br/>The Unspoken Rule}
+    HC4 --> HC4A[Aisle B:<br/>Max 2 pickers simultaneously]
+    HC4 --> HC4B[Limit high-velocity SKUs<br/>in Aisle B]
+    HC4A --> HC4V[⚠️ Simulation Penalty]
+    HC4B --> HC4V
+    
+    %% Soft Constraints
+    OF --> SoftC[📊 SOFT CONSTRAINTS<br/>Optimize for:]
+    
+    SoftC --> SC1[Velocity-Accessibility:<br/>Fast items near entry]
+    SoftC --> SC2[Co-location:<br/>Pair frequent together]
+    SoftC --> SC3[Fragility Placement:<br/>Delicate items low/safe]
+    SoftC --> SC4[Balance Distribution:<br/>Avoid aisle overload]
+    
+    %% Labor Budget
+    OF --> Budget[💰 LABOR BUDGET<br/>Limited Move Budget]
+    
+    Budget --> B1[Calculate Current State]
+    Budget --> B2[Calculate Target State]
+    
+    B1 --> B3[Count Moves Required]
+    B2 --> B3
+    
+    B3 --> B4{Within Budget?}
+    B4 -->|No| Prioritize[📊 PRIORITIZE MOVES]
+    B4 -->|Yes| Implement[✅ Implement Plan]
+    
+    Prioritize --> Pr1[Rank by Impact:<br/>Velocity × Distance Reduction]
+    Pr1 --> Pr2[Select Top N Moves<br/>that fit budget]
+    Pr2 --> Implement
+    
+    %% Algorithm Selection
+    Implement --> Algo{Algorithm Choice}
+    
+    Algo --> A1[Greedy Heuristic:<br/>Fast, Good Enough]
+    Algo --> A2[Genetic Algorithm:<br/>Better, Slower]
+    Algo --> A3[Linear Programming:<br/>Optimal, Complex]
+    Algo --> A4[Hybrid Approach:<br/>Multi-stage]
+    
+    A1 --> Run[▶️ RUN OPTIMIZATION]
+    A2 --> Run
+    A3 --> Run
+    A4 --> Run
+    
+    Run --> Iterate[🔄 ITERATE]
+    
+    Iterate --> Check1{Pass Hard<br/>Constraints?}
+    Check1 -->|No| Adjust1[Adjust Assignments]
+    Check1 -->|Yes| Check2{Within<br/>Budget?}
+    
+    Check2 -->|No| Adjust2[Reduce Moves]
+    Check2 -->|Yes| Check3{Aisle B<br/>Balanced?}
+    
+    Check3 -->|No| Adjust3[Redistribute<br/>High-Velocity SKUs]
+    Check3 -->|Yes| Validate[✓ VALIDATION]
+    
+    Adjust1 --> Run
+    Adjust2 --> Prioritize
+    Adjust3 --> Run
+    
+    %% Validation
+    Validate --> V1[Simulate Week 91]
+    V1 --> V2[Calculate Metrics:<br/>- Avg fulfillment time<br/>- Collision events<br/>- Spoilage risk<br/>- Travel distance]
+    
+    V2 --> V3{Metrics<br/>Improved?}
+    
+    V3 -->|No| Tune[🔧 Tune Parameters]
+    V3 -->|Yes| Output[📄 OUTPUT]
+    
+    Tune --> Objective
+    
+    %% Output Generation
+    Output --> Out1[Generate CSV:<br/>final_slotting_plan.csv]
+    
+    Out1 --> Format[📋 FORMAT:<br/>SKU_ID | Bin_ID]
+    
+    Format --> Out2[Validation Checks:]
+    Out2 --> Out2A[✓ Exactly 2 columns]
+    Out2 --> Out2B[✓ All SKUs included]
+    Out2 --> Out2C[✓ No duplicate SKUs]
+    Out2 --> Out2D[✓ All Bins valid]
+    
+    Out2A --> Final{Final<br/>Check?}
+    Out2B --> Final
+    Out2C --> Final
+    Out2D --> Final
+    
+    Final -->|Pass| Submit[✅ SUBMIT SLOTTING MAP<br/>Tie-Breaker File]
+    Final -->|Fail| Fix[⚠️ Fix Errors]
+    
+    Fix --> Out1
+    
+    %% Documentation
+    Submit --> Doc[📝 DOCUMENTATION]
+    
+    Doc --> D1[Explain Algorithm<br/>Choice & Logic]
+    Doc --> D2[Show Before/After<br/>Metrics Comparison]
+    Doc --> D3[List Assumptions<br/>& Limitations]
+    Doc --> D4[Sensitivity Analysis:<br/>+20% volume test]
+    
+    style Start fill:#4c6ef5,stroke:#364fc7,stroke-width:3px,color:#fff
+    style HardC fill:#fa5252,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style HC1V fill:#ff0000,stroke:#c92a2a,stroke-width:2px,color:#fff
+    style HC2V fill:#ff0000,stroke:#c92a2a,stroke-width:2px,color:#fff
+    style HC3V fill:#ff0000,stroke:#c92a2a,stroke-width:2px,color:#fff
+    style HC4V fill:#ff922b,stroke:#d9480f,stroke-width:2px
+    style SoftC fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style Optimize fill:#9775fa,stroke:#6741d9,stroke-width:2px
+    style Submit fill:#20c997,stroke:#087f5b,stroke-width:3px,color:#fff

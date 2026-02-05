@@ -1,0 +1,177 @@
+graph TB
+    Start[🏆 SCORING RUBRIC<br/>Total: 150 Points]
+    
+    Start --> Cat1[CATEGORY 1:<br/>Data Forensics & Integrity<br/>30 Points]
+    Start --> Cat2[CATEGORY 2:<br/>Decision-Support Dashboard<br/>40 Points]
+    Start --> Cat3[CATEGORY 3:<br/>Strategic Slotting Map<br/>40 Points]
+    Start --> Cat4[CATEGORY 4:<br/>Executive Pitch<br/>40 Points]
+    
+    %% Category 1: Data Forensics
+    Cat1 --> C1[Data Forensics Breakdown:]
+    
+    C1 --> C1A[🔍 Issue 1: Decimal Drift<br/>10 Points]
+    C1A --> C1A1[Identification: 3 pts<br/>Which SKUs affected?]
+    C1A --> C1A2[Methodology: 4 pts<br/>How detected?<br/>Validation approach?]
+    C1A --> C1A3[Correction: 3 pts<br/>Fix applied correctly?<br/>Before/after proof?]
+    
+    C1 --> C1B[🔍 Issue 2: Shortcut Paradox<br/>10 Points]
+    C1B --> C1B1[Detection: 3 pts<br/>Picker 07 identified?<br/>Others found?]
+    C1B --> C1B2[Evidence: 4 pts<br/>GPS analysis shown?<br/>Proof of shortcuts?]
+    C1B --> C1B3[Impact: 3 pts<br/>Metrics recalculated?<br/>True efficiency shown?]
+    
+    C1 --> C1C[🔍 Issue 3: Ghost Inventory<br/>10 Points]
+    C1C --> C1C1[Discovery: 3 pts<br/>Invalid bins found?<br/>How many SKUs?]
+    C1C --> C1C2[Root Cause: 4 pts<br/>Why it happened?<br/>System issue?]
+    C1C --> C1C3[Resolution: 3 pts<br/>Strategy to fix?<br/>Prevent recurrence?]
+    
+    C1A1 --> C1Total[✅ Category 1 Score<br/>__/30 Points]
+    C1A2 --> C1Total
+    C1A3 --> C1Total
+    C1B1 --> C1Total
+    C1B2 --> C1Total
+    C1B3 --> C1Total
+    C1C1 --> C1Total
+    C1C2 --> C1Total
+    C1C3 --> C1Total
+    
+    %% Category 2: Dashboard
+    Cat2 --> C2[Dashboard Component Breakdown:]
+    
+    C2 --> C2A[📊 Component 1: Collision Heatmap<br/>12 Points]
+    C2A --> C2A1[Aisle B Visible: 4 pts<br/>Bottleneck clearly shown?]
+    C2A --> C2A2[19:00 Peak: 4 pts<br/>Time filter working?<br/>Peak visible?]
+    C2A --> C2A3[Interactivity: 4 pts<br/>Clickable?<br/>Drill-down works?]
+    
+    C2 --> C2B[🌡️ Component 2: Spoilage Risk<br/>12 Points]
+    C2B --> C2B1[Violations ID: 4 pts<br/>Temp mismatches found?<br/>All zones checked?]
+    C2B --> C2B2[Value Calc: 4 pts<br/>Total $ at risk shown?<br/>Math correct?]
+    C2B --> C2B3[Visualization: 4 pts<br/>Clear & actionable?<br/>Top risks listed?]
+    
+    C2 --> C2C[🚧 Component 3: Forklift Dead-zone<br/>12 Points]
+    C2C --> C2C1[Windows ID: 4 pts<br/>Restocking times shown?<br/>Conflicts visible?]
+    C2C --> C2C2[Aisle B Rule: 4 pts<br/>Max 2 pickers shown?<br/>Unspoken physics?]
+    C2C --> C2C3[Impact Calc: 4 pts<br/>Blocked time quantified?<br/>Solutions suggested?]
+    
+    C2 --> C2D[🎨 Overall Quality<br/>4 Points]
+    C2D --> C2D1[Professional: 2 pts<br/>Clean design?<br/>No errors?]
+    C2D --> C2D2[Accessibility: 2 pts<br/>Link works?<br/>Video clear?]
+    
+    C2A1 --> C2Total[✅ Category 2 Score<br/>__/40 Points]
+    C2A2 --> C2Total
+    C2A3 --> C2Total
+    C2B1 --> C2Total
+    C2B2 --> C2Total
+    C2B3 --> C2Total
+    C2C1 --> C2Total
+    C2C2 --> C2Total
+    C2C3 --> C2Total
+    C2D1 --> C2Total
+    C2D2 --> C2Total
+    
+    %% Category 3: Slotting Map
+    Cat3 --> C3[Slotting Map Breakdown:]
+    
+    C3 --> C3A[✅ Hard Constraints<br/>20 Points ALL-OR-NOTHING]
+    C3A --> C3A1{Temperature<br/>Match?}
+    C3A --> C3A2{Weight<br/>Limits OK?}
+    C3A --> C3A3{Valid<br/>Bins Only?}
+    
+    C3A1 -->|Yes| C3APass[+20 Points]
+    C3A2 -->|Yes| C3APass
+    C3A3 -->|Yes| C3APass
+    
+    C3A1 -->|No| C3AFail[❌ 0 Points<br/>AUTOMATIC ZERO<br/>For This Category]
+    C3A2 -->|No| C3AFail
+    C3A3 -->|No| C3AFail
+    
+    C3 --> C3B[📊 Optimization Quality<br/>15 Points IF Constraints Pass]
+    C3B --> C3B1[Travel Reduction: 5 pts<br/>Distance minimized?<br/>High-velocity near entry?]
+    C3B --> C3B2[Collision Reduction: 5 pts<br/>Aisle B load balanced?<br/>Congestion addressed?]
+    C3B --> C3B3[Efficiency: 5 pts<br/>Within labor budget?<br/>High-impact moves?]
+    
+    C3 --> C3C[🎭 Unspoken Physics<br/>5 Points]
+    C3C --> C3C1[Aisle B Rule: 3 pts<br/>Max 2 pickers considered?<br/>Load distributed?]
+    C3C --> C3C2[Forklift Aware: 2 pts<br/>Restocking conflicts avoided?]
+    
+    C3APass --> C3Total[✅ Category 3 Score<br/>__/40 Points]
+    C3B1 --> C3Total
+    C3B2 --> C3Total
+    C3B3 --> C3Total
+    C3C1 --> C3Total
+    C3C2 --> C3Total
+    
+    C3AFail --> C3Zero[Category 3: 0/40<br/>⚠️ Critical Failure]
+    
+    %% Category 4: Executive Pitch
+    Cat4 --> C4[Executive Pitch Breakdown:]
+    
+    C4 --> C4A[⚡ Chaos Score<br/>12 Points]
+    C4A --> C4A1[Definition: 4 pts<br/>Formula clear?<br/>Components justified?]
+    C4A --> C4A2[Calculation: 4 pts<br/>Current score shown?<br/>Math correct?]
+    C4A --> C4A3[Visualization: 4 pts<br/>Compelling graphics?<br/>Trend visible?]
+    
+    C4 --> C4B[🎯 Phase 1 Roadmap<br/>14 Points]
+    C4B --> C4B1[Top 50 Selection: 5 pts<br/>Right SKUs chosen?<br/>Logic explained?]
+    C4B --> C4B2[Impact Analysis: 5 pts<br/>Time savings quantified?<br/>Risk reduction shown?]
+    C4B --> C4B3[Actionability: 4 pts<br/>Can execute tonight?<br/>Clear priorities?]
+    
+    C4 --> C4C[📈 Sensitivity Analysis<br/>14 Points]
+    C4C --> C4C1[+20% Test: 5 pts<br/>Scenario simulated?<br/>Results documented?]
+    C4C --> C4C2[Resilience: 5 pts<br/>Plan holds up?<br/>Breaking points ID'd?]
+    C4C --> C4C3[Mitigation: 4 pts<br/>Backup plans?<br/>Contingencies clear?]
+    
+    C4A1 --> C4Total[✅ Category 4 Score<br/>__/40 Points]
+    C4A2 --> C4Total
+    C4A3 --> C4Total
+    C4B1 --> C4Total
+    C4B2 --> C4Total
+    C4B3 --> C4Total
+    C4C1 --> C4Total
+    C4C2 --> C4Total
+    C4C3 --> C4Total
+    
+    %% Final Scoring
+    C1Total --> Final[🎯 FINAL SCORE]
+    C2Total --> Final
+    C3Total --> Final
+    C4Total --> Final
+    C3Zero --> Final
+    
+    Final --> Calc[Score Calculation:]
+    
+    Calc --> Score1[Data Forensics: __/30]
+    Calc --> Score2[Dashboard: __/40]
+    Calc --> Score3[Slotting Map: __/40<br/>⚠️ Can be 0 if violations]
+    Calc --> Score4[Executive Pitch: __/40]
+    
+    Score1 --> Total[TOTAL: __/150 Points]
+    Score2 --> Total
+    Score3 --> Total
+    Score4 --> Total
+    
+    Total --> Rank{Performance Level}
+    
+    Rank --> R1[135-150:<br/>🥇 EXCEPTIONAL<br/>Publication-quality work]
+    Rank --> R2[120-134:<br/>🥈 EXCELLENT<br/>Strong execution]
+    Rank --> R3[100-119:<br/>🥉 GOOD<br/>Solid performance]
+    Rank --> R4[80-99:<br/>✓ COMPETENT<br/>Meets requirements]
+    Rank --> R5[Below 80:<br/>⚠️ NEEDS WORK<br/>Major gaps]
+    
+    %% Tie-Breaker
+    Total --> TieBreak[🔀 TIE-BREAKER:<br/>If scores equal]
+    
+    TieBreak --> TB1[1st: Slotting Map<br/>Simulation performance<br/>Private engine results]
+    TB1 --> TB2[2nd: Dashboard<br/>Interactivity & insights]
+    TB2 --> TB3[3rd: Data Forensics<br/>Thoroughness]
+    
+    style Start fill:#4c6ef5,stroke:#364fc7,stroke-width:3px,color:#fff
+    style Cat1 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
+    style Cat2 fill:#4dabf7,stroke:#1971c2,stroke-width:2px
+    style Cat3 fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style Cat4 fill:#9775fa,stroke:#6741d9,stroke-width:2px
+    style C3AFail fill:#ff0000,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style C3Zero fill:#ff0000,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Total fill:#ffd43b,stroke:#fab005,stroke-width:3px
+    style R1 fill:#20c997,stroke:#087f5b,stroke-width:2px,color:#fff
+    style R2 fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
+    style R3 fill:#94d82d,stroke:#5c940d,stroke-width:2px
